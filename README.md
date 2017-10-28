@@ -7,15 +7,15 @@ To make calls to [Microsoft Graph](https://developer.microsoft.com/en-us/graph/)
 This repo includes simple examples of four different approaches you can use to authenticate with Azure AD from a Python web application. Each sample implements the OAuth 2.0 [Authorization Code Grant](https://tools.ietf.org/html/rfc6749#section-4.1) workflow, which is the recommended approach for web applications written in Python.
 
 * [Python Auth Options](#python-auth-options)
-* [Sample Implementations](#sample-implementations)
+* [The Samples](#the-samples)
 * [Setup](#setup)
 * [Running the Samples](#running-the-samples)
 * [Contributing](#contributing)
-* [Additional Resources](#additional-resources)
+* [Resources](#resources)
 
 ## Python Auth Options
 
-The following is a summary of the authentication options that are demonstrated in the samples in this repo.
+The following is a summary of the authentication options that are demonstrated by the code samples in this repo.
 
 ### Option #1: Microsoft ADAL (Active Directory Authentication Library)
 
@@ -33,7 +33,7 @@ If you're using [Requests](http://docs.python-requests.org/en/master/), the most
 
 If you're interested in developing your own authentication module, or are curious about the details of implementing OAuth 2.0 authentication for a web application, the [auth_graphrest.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_graphrest.py) sample provides an example of authenticating with [graphrest](https://github.com/microsoftgraph/python-sample-auth/blob/master/graphrest.py), a custom auth library written in Python. Note that this sample uses the [Bottle](https://bottlepy.org/docs/dev/) web framework, although it is relatively easy to port it to Flask or any other web framework that supports redirects and provides access to request query parameters.
 
-## Sample Implementations
+## The Samples
 
 The samples all do the same simple thing: prompt the user to log in, then display their user profile data as JSON. All samples use the same names for variables, functions, routes, and templates, making it easy to see how the implementation details vary between different auth libraries.
 
@@ -52,7 +52,7 @@ At a high level, each source file has this structure:
 
 You can modify the samples to test specific Graph calls you'd like to make, by changing the endpoint that is being used and changing the requested scopes (permissions) to whatever that endpoint requires. For example, to retrieve your email messages instead of user profile data, change the 'me' endpoint to 'me/messages' and add 'Mail.Read' to the scopes requested. With those changes, the sample will display a JSON document that contains the top ten messages from your mailbox.
 
-Note that these samples are intended to clarify the minimum steps required for authenticating and making calls to Microsoft Graph, so they don't include error handling and other common practices for production deployment.
+Note that these samples are intended to clarify the minimum steps required for authenticating and making calls to Microsoft Graph, so they don't include error handling and other common practices for production deployment. The samples run in a simple dev/test HTTP server, but for a production deployment you should use a more secure and higher performance server such as one of those listed here: [https://wiki.python.org/moin/WebServers](https://wiki.python.org/moin/WebServers)
 
 ## Setup
 
@@ -128,17 +128,16 @@ This sample is open source, released under the [MIT License](https://github.com/
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
-## Additional Resources
+## Resources
 
-Here are some resources that may be useful if you'd like to learn more about the technologies used in this sample:
+Additional information about the technologies used in this sample:
 
-* [Microsoft Azure Active Directory Authentication Library (ADAL) for Python](https://github.com/AzureAD/azure-activedirectory-library-for-python)
+* [Microsoft Graph web site](https://developer.microsoft.com/en-us/graph/)
+* [Get access tokens to call Microsoft Graph](https://developer.microsoft.com/en-us/graph/docs/concepts/auth_overview).
+* [Microsoft ADAL for Python](https://github.com/AzureAD/azure-activedirectory-library-for-python)
 * [Flask-Oauthlib](https://flask-oauthlib.readthedocs.io/en/latest/)
 * [Requests-Oauthlib](https://media.readthedocs.org/pdf/requests-oauthlib/latest/requests-oauthlib.pdf)
 * [graphrest module](graphrest.md)
-* [Oauth 2.0 Authorization Framework specification](http://www.rfc-editor.org/rfc/rfc6749.txt)
+* [Azure Active Directory v2.0 authentication libraries](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-libraries)
+* [Oauth 2.0 specification](http://www.rfc-editor.org/rfc/rfc6749.txt)
 * [Open ID Connect specifications](http://openid.net/connect/)
-* For an overview of how authentication works in [Microsoft Graph](https://developer.microsoft.com/en-us/graph/) see [Get access tokens to call Microsoft Graph](https://developer.microsoft.com/en-us/graph/docs/concepts/auth_overview).
-* For the latest information about Microsoft-supported and compatible client libraries for working with Azure Active Directory, see [Azure Active Directory v2.0 authentication libraries](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-libraries).
-* These samples use simple Python dev/test HTTP servers. For a production deployment, you should use a more secure and higher performance server such as one of those listed here: [https://wiki.python.org/moin/WebServers](https://wiki.python.org/moin/WebServers)
-* To learn more about available Graph endpoints, see the [Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer), an interactive tool for exploring the capabilities of Microsoft Graph.
