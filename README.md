@@ -19,9 +19,7 @@ The following is a brief summary of the options that are demonstrated in the sam
 
 ### Option #1: Microsoft ADAL (Active Directory Authentication Library)
 
-The [Microsoft Azure Active Directory Authentication Library (ADAL) for Python](https://github.com/AzureAD/azure-activedirectory-library-for-python) supports a variety of token acquisition methods and can be used for other Azure AD authentication scenarios in addition to working with Microsoft Graph. It is currently the Microsoft-supported option for Python developers. ADAL does not provide support for [Microsoft Accounts](https://account.microsoft.com/account/Account) (MSAs) or [incremental consent](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-compare), so if you need those capabilities one of the other options below may be a better fit.
-
-The [auth_adal.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_adal.py) sample demonstrates how to use Microsoft ADAL to authenticate for Microsoft Graph.
+The [auth_adal.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_adal.py) sample demonstrates how to use the [Microsoft Azure Active Directory Authentication Library (ADAL) for Python](https://github.com/AzureAD/azure-activedirectory-library-for-python) for authentication to Microsoft Graph. ADAL supports a variety of token acquisition methods and can be used for other Azure AD authentication scenarios in addition to working with Graph. ADAL does not provide support for [Microsoft Accounts](https://account.microsoft.com/account/Account) (MSAs) or [incremental consent](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-compare), so if you need those capabilities one of the other options below may be a better fit.
 
 ### Option #2: Flask-OAuthlib
 
