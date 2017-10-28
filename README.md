@@ -36,7 +36,7 @@ If you're interested in developing your own authentication module, or are curiou
 
 The samples all do the same simple thing: prompt the user to log in, then display their user profile data as JSON. All samples use the same names for variables, functions, routes, and templates, making it easy to see how the implementation details vary between different auth libraries.
 
-Here's a high-level diagram of how the samples implementation the Authorization Code Grant workflow:
+Here's a high-level diagram of how the samples implement the Authorization Code Grant workflow:
 
 ![authentication workflow](static/images/authworkflow.png)
 
