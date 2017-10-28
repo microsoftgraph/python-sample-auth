@@ -15,7 +15,7 @@ This repo includes simple examples of four different approaches you can use to a
 
 ## Python Auth Options
 
-The following is a brief summary of the options that are demonstrated in the samples in this repo. Note that these samples are intended to clarify the minimum steps required for authenticating and making calls to Microsoft Graph, so they don't include error handling and other common practices for production deployment.
+The following is a summary of the authentication options that are demonstrated in the samples in this repo.
 
 ### Option #1: Microsoft ADAL (Active Directory Authentication Library)
 
@@ -51,6 +51,8 @@ At a high level, each source file has this structure:
 ![Graph call](static/images/graphcall2.png)
 
 You can modify the samples to test specific Graph calls you'd like to make, by changing the endpoint that is being used and changing the requested scopes (permissions) to whatever that endpoint requires. For example, to retrieve your email messages instead of user profile data, change the 'me' endpoint to 'me/messages' and add 'Mail.Read' to the scopes requested. With those changes, the sample will display a JSON document that contains the top ten messages from your mailbox.
+
+Note that these samples are intended to clarify the minimum steps required for authenticating and making calls to Microsoft Graph, so they don't include error handling and other common practices for production deployment.
 
 ## Setup
 
