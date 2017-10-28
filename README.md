@@ -39,14 +39,14 @@ The samples all do the same simple thing: prompt the user to log in, then displa
 
 At a high level, each source file has this structure:
 
-1. initial setup, including reading configuration settings and creating auth provider instance
-2. homepage() handler function serves up a static page with a button to go to /login
+1. **initial setup**, including reading configuration settings and instantiating an auth provider
+2. **homepage() handler** function serves up a static page with a button to go to /login
 
 ![home page](static/images/homepage2.png)
 
-3. login() handler function asks auth provider to authenticate user; user logs in
-4. Redirect URI handler function receives an authorization code, uses it to request a token, then redirects to /graphcall
-5. graphcall() handler function calls Microsoft Graph and displays some data
+3. **login() handler** function asks auth provider to authenticate user; user logs in
+4. **Redirect URI handler** function receives an authorization code, uses it to request a token, then redirects to /graphcall
+5. **graphcall() handler** function calls Microsoft Graph and displays some data
 
 ![Graph call](static/images/graphcall2.png)
 
