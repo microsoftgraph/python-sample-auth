@@ -44,13 +44,13 @@ At a high level, each source file has this structure:
 1. initial setup, including reading configuration settings and creating auth provider instance
 2. homepage() handler function serves up a static page with a button to go to /login
 
-![home page](static/images/homepage.png)
+![home page](static/images/homepage2.png)
 
 3. login() handler function asks auth provider to authenticate user; user logs in
 4. Redirect URI handler function receives an authorization code, uses it to request a token, then redirects to /graphcall
 5. graphcall() handler function calls Microsoft Graph and displays some data
 
-![Graph call](static/images/graphcall.png)
+![Graph call](static/images/graphcall2.png)
 
 You can modify the samples to test specific Graph calls you'd like to make, by changing the endpoint that is being used and changing the requested scopes (permissions) to whatever that endpoint requires. For example, to retrieve your email messages instead of user profile data, change the 'me' endpoint to 'me/messages' and add 'Mail.Read' to the scopes requested. With those changes, the sample will display a JSON document that contains the top ten messages from your mailbox.
 
