@@ -39,20 +39,20 @@ The samples all do the same simple thing: prompt the user to log in, then displa
 
 At a high level, each source file has this structure:
 
-1. **initial setup**, including reading configuration settings and instantiating an auth provider
-2. **homepage() handler** function serves up a static page with a button to go to /login
+1. **initial setup** &mdash; read configuration settings and instantiate auth provider
+2. **homepage() handler** &mdash; static page with a /login button
 
 ![home page](static/images/homepage2.png)
 
-3. **login() handler** function asks auth provider to authenticate user; user logs in
-4. **Redirect URI handler** function receives an authorization code, uses it to request a token, then redirects to /graphcall
-5. **graphcall() handler** function calls Microsoft Graph and displays some data
+3. **login() handler** &mdash; auth provider authenticates user, Azure AD returns authorization code
+4. **Redirect URI handler** &mdash; receive authorization code, use it to request token then redirect to /graphcall
+5. **graphcall() handler** &mdash; query Microsoft Graph and display returned data
 
 ![Graph call](static/images/graphcall2.png)
 
 You can modify the samples to test specific Graph calls you'd like to make, by changing the endpoint that is being used and changing the requested scopes (permissions) to whatever that endpoint requires. For example, to retrieve your email messages instead of user profile data, change the 'me' endpoint to 'me/messages' and add 'Mail.Read' to the scopes requested. With those changes, the sample will display a JSON document that contains the top ten messages from your mailbox.
 
-Note that these samples are intended to clarify the minimum steps required for authenticating and making calls to Microsoft Graph, so they don't include error handling and other common practices for production deployment. The samples run in a simple dev/test HTTP server, but for a production deployment you should use a more secure and higher performance server such as one of those listed here: [https://wiki.python.org/moin/WebServers](https://wiki.python.org/moin/WebServers)
+Note that these samples are intended to clarify the minimum steps required for authenticating and making calls to Microsoft Graph, so they don't include error handling and other common practices for production deployment.
 
 ## Setup
 
