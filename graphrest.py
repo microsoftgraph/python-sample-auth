@@ -68,6 +68,7 @@ class GraphSession(object):
         verify = Requests option for verifying SSL certificate; defaults
                  to False for demo purposes. For more information see:
         http://docs.python-requests.org/en/master/user/advanced/#ssl-csert-verification
+        Returns a Requests response object.
         """
         self.token_validation()
         return self.state['session'].delete(self.api_endpoint(url), \
@@ -91,12 +92,15 @@ class GraphSession(object):
 
     def get(self, endpoint, headers=None, stream=False, jsononly=False):
         """Wrapper for authenticated HTTP GET from API endpoint.
+
         endpoint = absolute or relative URL (e.g., "me/contacts")
         headers = dictionary of HTTP request headers, can override the defaults
                   returned by http_request_headers()
         stream = Requests stream argument; e.g., use True for image data
         jsononly = if True, the JSON 'value' element is returned instead of
                    the response object
+
+        Returns a Requests response object.
         """
         self.token_validation()
         response = self.state['session'].get(self.api_endpoint(endpoint), \
@@ -212,14 +216,18 @@ class GraphSession(object):
         return True
 
     def patch(self, url, headers=None, data=None, verify=False, params=None):
-        """Wrapper for authenticated HTTP PATCH to API endpoint."""
+        """Wrapper for authenticated HTTP PATCH to API endpoint.
+        Returns a Requests response object.
+        """
         self.token_validation()
         return self.state['session'].patch(self.api_endpoint(url), \
             headers=self.http_request_headers(headers), \
             data=data, verify=verify, params=params)
 
     def post(self, url, headers=None, data=None, verify=False, params=None):
-        """Wrapper for authenticated HTTP POST to API endpoint."""
+        """Wrapper for authenticated HTTP POST to API endpoint.
+        Returns a Requests response object.
+        """
         self.token_validation()
         return self.state['session'].post(self.api_endpoint(url), \
             headers=self.http_request_headers(headers), \
