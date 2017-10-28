@@ -7,9 +7,8 @@ To make calls to [Microsoft Graph](https://developer.microsoft.com/en-us/graph/)
 This repo includes simple examples of four different approaches you can use to authenticate with Azure AD from a Python web application. Each sample implements the OAuth 2.0 [Authorization Code Grant](https://tools.ietf.org/html/rfc6749#section-4.1) workflow, which is the recommended approach for web applications written in Python.
 
 * [Python Auth Options](#python-auth-options)
-* [The Samples](#the-samples)
-* [Setup](#setup)
-* [Running the Samples](#running-the-samples)
+* [Sample Architecture](#sample-architecture)
+* [Using the Samples](#using-the-samples)
 * [Contributing](#contributing)
 * [Resources](#resources)
 
@@ -33,32 +32,29 @@ If you're using [Requests](http://docs.python-requests.org/en/master/), the most
 
 If you're interested in developing your own authentication module, or are curious about the details of implementing OAuth 2.0 authentication for a web application, the [auth_graphrest.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_graphrest.py) sample provides an example of authenticating with [graphrest](https://github.com/microsoftgraph/python-sample-auth/blob/master/graphrest.py), a custom auth library written in Python. Note that this sample uses the [Bottle](https://bottlepy.org/docs/dev/) web framework, although it is relatively easy to port it to Flask or any other web framework that supports redirects and provides access to request query parameters.
 
-## The Samples
+## Sample Architecture
 
 The samples all do the same simple thing: prompt the user to log in, then display their user profile data as JSON. All samples use the same names for variables, functions, routes, and templates, making it easy to see how the implementation details vary between different auth libraries.
 
+Here's a high-level diagram of how the samples implementation the Authorization Code Grant workflow:
+
 ![authentication workflow](static/images/authworkflow.png)
 
-At a high level, each source file has this structure:
+Each sample app source file has the same structure:
 
 1. **initial setup** &mdash; read configuration settings and instantiate auth provider
 2. **homepage() handler** &mdash; static page with a /login button
-
-![home page](static/images/homepage2.png)
-
 3. **login() handler** &mdash; auth provider authenticates user, Azure AD returns authorization code
 4. **Redirect URI handler** &mdash; receive authorization code, use it to request token then redirect to /graphcall
 5. **graphcall() handler** &mdash; query Microsoft Graph and display returned data
-
-![Graph call](static/images/graphcall2.png)
 
 You can modify the samples to test specific Graph calls you'd like to make, by changing the endpoint that is being used and changing the requested scopes (permissions) to whatever that endpoint requires. For example, to retrieve your email messages instead of user profile data, change the 'me' endpoint to 'me/messages' and add 'Mail.Read' to the scopes requested. With those changes, the sample will display a JSON document that contains the top ten messages from your mailbox.
 
 Note that these samples are intended to clarify the minimum steps required for authenticating and making calls to Microsoft Graph, so they don't include error handling and other common practices for production deployment.
 
-## Setup
+## Using the Samples
 
-The following instructions take you through the steps required to get the samples installed on your system and ready to run.
+The following instructions take you through the steps required to install, configure, and run the samples.
 
 ### Prerequisites
 
@@ -106,7 +102,7 @@ Follow these steps to register a new application:
 
 As the final step in configuring the sample, create a text file named ```config.txt``` in the root folder of your cloned repo, and put your Application Id (also known as a *client ID*) on the first line of the file and your password (also known as a *client secret*) on the second line of the file. This file is read by each of the samples on startup, to get the configuration information for your registered application.
 
-## Running the Samples
+### Running the Samples
 
 To run one of the samples, run the command ```python <progname>``` in the root folder of the cloned repo. For example, to run the ADAL sample use this command: ```python auth_adal.py```
 
