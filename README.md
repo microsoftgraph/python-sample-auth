@@ -31,7 +31,7 @@ If you're using [Requests](http://docs.python-requests.org/en/master/), the most
 
 ### Option #4: graphrest module
 
-If you're interested in developing your own authentication module, or are curious about the details of implementing OAuth 2.0 authentication for a web application, the [auth_graphrest.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_graphrest.py) sample provides an example of a custom authentication solution written in Python. Note that this sample uses the [Bottle](https://bottlepy.org/docs/dev/) web framework, although it is relatively easy to port it to Flask or any other web framework that supports redirects and provides access to request query parameters.
+If you're interested in developing your own authentication module, or are curious about the details of implementing OAuth 2.0 authentication for a web application, the [auth_graphrest.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_graphrest.py) sample provides an example of authenticating with [graphrest](https://github.com/microsoftgraph/python-sample-auth/blob/master/graphrest.py), a custom auth library written in Python. Note that this sample uses the [Bottle](https://bottlepy.org/docs/dev/) web framework, although it is relatively easy to port it to Flask or any other web framework that supports redirects and provides access to request query parameters.
 
 ## Sample Implementations
 
