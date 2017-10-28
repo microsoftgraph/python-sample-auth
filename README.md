@@ -37,6 +37,8 @@ If you're interested in developing your own authentication module, or are curiou
 
 The samples all do the same simple thing: prompt the user to log in, then display their user profile data as JSON. All samples use the same names for variables, functions, routes, and templates, making it easy to see how the implementation details vary between different auth libraries.
 
+![authentication workflow](static/images/authworkflow.png)
+
 At a high level, each source file has this structure:
 
 1. **initial setup** &mdash; read configuration settings and instantiate auth provider
