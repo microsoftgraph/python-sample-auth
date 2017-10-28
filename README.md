@@ -17,7 +17,7 @@ This repo includes simple examples of four different approaches you can use to a
 
 The following is a summary of the authentication options that are demonstrated by the code samples in this repo.
 
-### auth_adal.py - Microsoft ADAL
+### Microsoft ADAL &mdash; auth_adal.py
 
 The [auth_adal.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_adal.py) sample demonstrates how to use the [Microsoft Azure Active Directory Authentication Library (ADAL) for Python](https://github.com/AzureAD/azure-activedirectory-library-for-python) for authentication to Microsoft Graph. ADAL supports a variety of token acquisition methods and can be used for other Azure AD authentication scenarios in addition to working with Graph. ADAL does not provide support for [Microsoft Accounts](https://account.microsoft.com/account/Account) (MSAs) or [incremental consent](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-compare), so if you need those capabilities one of the other options below may be a better fit.
 
