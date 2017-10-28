@@ -17,19 +17,19 @@ This repo includes simple examples of four different approaches you can use to a
 
 The following is a summary of the authentication options that are demonstrated by the code samples in this repo.
 
-### Option #1: Microsoft ADAL (Active Directory Authentication Library)
+### auth_adal.py - Microsoft ADAL
 
 The [auth_adal.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_adal.py) sample demonstrates how to use the [Microsoft Azure Active Directory Authentication Library (ADAL) for Python](https://github.com/AzureAD/azure-activedirectory-library-for-python) for authentication to Microsoft Graph. ADAL supports a variety of token acquisition methods and can be used for other Azure AD authentication scenarios in addition to working with Graph. ADAL does not provide support for [Microsoft Accounts](https://account.microsoft.com/account/Account) (MSAs) or [incremental consent](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-compare), so if you need those capabilities one of the other options below may be a better fit.
 
-### Option #2: Flask-OAuthlib
+### auth_flask.py - Flask-OAuthlib
 
 If you're building a [Flask](http://flask.pocoo.org/)-based web application, the [Flask-OAuthlib](https://flask-oauthlib.readthedocs.io/en/latest/) provides a simple way to authenticate with Azure AD for Microsoft Graph. The [auth_flask.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_flask.py) sample demonstrates how to use Flask-OAuthlib to authenticate for Microsoft Graph.
 
-### Option #3: Request-OAuthlib
+### auth_requests.py - Request-OAuthlib
 
 If you're using [Requests](http://docs.python-requests.org/en/master/), the most popular HTTP library for Python developers, [Requests-OAuthlib](https://github.com/requests/requests-oauthlib) is a good option for Microsoft Graph authentication. The [auth_requests.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_requests.py) sample demonstrates how to use Requests-OAuthlib to authenticate for Microsoft Graph.
 
-### Option #4: graphrest module
+### auth_graphrest.py - graphrest module
 
 If you're interested in developing your own authentication module, or are curious about the details of implementing OAuth 2.0 authentication for a web application, the [auth_graphrest.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_graphrest.py) sample provides an example of authenticating with [graphrest](https://github.com/microsoftgraph/python-sample-auth/blob/master/graphrest.py), a custom auth library written in Python. Note that this sample uses the [Bottle](https://bottlepy.org/docs/dev/) web framework, although it is relatively easy to port it to Flask or any other web framework that supports redirects and provides access to request query parameters.
 
