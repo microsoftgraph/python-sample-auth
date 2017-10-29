@@ -48,7 +48,7 @@ Each sample app source file has the same structure:
 4. **Redirect URI handler** &mdash; receive authorization code, use it to request token then redirect to /graphcall
 5. **graphcall() handler** &mdash; query Microsoft Graph and display returned data
 
-You can modify the samples to test specific Graph calls you'd like to make, by changing the endpoint that is being used and changing the requested scopes (permissions) to whatever that endpoint requires. For example, to retrieve your email messages instead of user profile data, change the 'me' endpoint to 'me/messages' and add 'Mail.Read' to the scopes requested. With those changes, the sample will display a JSON document that contains the top ten messages from your mailbox.
+You can modify the samples to test specific Graph calls you'd like to make, by changing the endpoint that is being used and changing the requested scopes (permissions) to whatever that endpoint requires. For example, to retrieve your email messages instead of user profile data, change the ```/me``` endpoint to ```/me/messages``` and add ```Mail.Read``` to the scopes requested. With those changes, the sample will display a JSON document that contains the top ten messages from your mailbox.
 
 Note that these samples are intended to clarify the minimum steps required for authenticating and making calls to Microsoft Graph, so they don't include error handling and other common practices for production deployment.
 

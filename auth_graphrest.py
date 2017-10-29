@@ -6,14 +6,11 @@ import os
 import bottle
 import graphrest
 
-with open('config.txt') as configfile:
-    CLIENT_ID, CLIENT_SECRET, *_ = configfile.read().splitlines()
-REDIRECT_URI = 'http://localhost:5000/login/authorized'
-SCOPES = ['User.Read']
+from config import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
 MSGRAPH = graphrest.GraphSession(client_id=CLIENT_ID,
                                  client_secret=CLIENT_SECRET,
                                  redirect_uri=REDIRECT_URI,
-                                 scopes=SCOPES)
+                                 scopes=['User.Read'])
 
 bottle.TEMPLATE_PATH.insert(0, './templates') # template files are in /templates
 

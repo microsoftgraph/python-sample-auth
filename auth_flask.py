@@ -6,23 +6,21 @@ import uuid
 from flask import Flask, redirect, render_template, request, session
 from flask_oauthlib.client import OAuth
 
-with open('config.txt') as configfile:
-    CLIENT_ID, CLIENT_SECRET, *_ = configfile.read().splitlines()
-REDIRECT_URI = 'http://localhost:5000/login/authorized'
+from config import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, RESOURCE, API_VERSION
+from config import AUTHORITY_URL, AUTH_ENDPOINT, TOKEN_ENDPOINT
 
 APP = Flask(__name__)
 APP.debug = True
 APP.secret_key = 'development'
 
 OAUTH = OAuth(APP)
-BASE_URL = 'https://graph.microsoft.com/v1.0/'
 MSGRAPH = OAUTH.remote_app(
     'microsoft', consumer_key=CLIENT_ID, consumer_secret=CLIENT_SECRET,
     request_token_params={'scope': 'User.Read'},
-    base_url=BASE_URL,
+    base_url=RESOURCE + API_VERSION + '/',
     request_token_url=None, access_token_method='POST',
-    access_token_url='https://login.microsoftonline.com/common/oauth2/v2.0/token',
-    authorize_url='https://login.microsoftonline.com/common/oauth2/v2.0/authorize')
+    access_token_url=AUTHORITY_URL + TOKEN_ENDPOINT,
+    authorize_url=AUTHORITY_URL + AUTH_ENDPOINT)
 
 @APP.route('/')
 def homepage():
@@ -51,7 +49,7 @@ def graphcall():
     graphdata = MSGRAPH.get(endpoint).data
     return render_template('graphcall.html',
                            graphdata=graphdata,
-                           endpoint=BASE_URL + endpoint,
+                           endpoint=RESOURCE + API_VERSION + '/' + endpoint,
                            sample='Flask-OAuthlib')
 
 @MSGRAPH.tokengetter

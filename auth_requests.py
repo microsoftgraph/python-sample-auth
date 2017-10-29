@@ -6,10 +6,9 @@ import os
 import bottle
 from requests_oauthlib import OAuth2Session
 
-with open('config.txt') as configfile:
-    CLIENT_ID, CLIENT_SECRET, *_ = configfile.read().splitlines()
-MSGRAPH = OAuth2Session(CLIENT_ID, scope=['User.Read'],
-                        redirect_uri='http://localhost:5000/login/authorized')
+from config import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, RESOURCE, API_VERSION
+from config import AUTHORITY_URL, AUTH_ENDPOINT, TOKEN_ENDPOINT
+MSGRAPH = OAuth2Session(CLIENT_ID, scope=['User.Read'], redirect_uri=REDIRECT_URI)
 
 # enable non-HTTPS redirect URI for development/testing
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -29,7 +28,7 @@ def homepage():
 @bottle.route('/login')
 def login():
     """Prompt user to authenticate."""
-    auth_base = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize'
+    auth_base = AUTHORITY_URL + AUTH_ENDPOINT
     authorization_url, state = MSGRAPH.authorization_url(auth_base)
     MSGRAPH.auth_state = state
     return bottle.redirect(authorization_url)
@@ -39,7 +38,7 @@ def authorized():
     """Handler for the application's Redirect Uri."""
     if bottle.request.query.state != MSGRAPH.auth_state:
         raise Exception('state returned to redirect URL does not match!')
-    MSGRAPH.fetch_token('https://login.microsoftonline.com/common/oauth2/v2.0/token',
+    MSGRAPH.fetch_token(AUTHORITY_URL + TOKEN_ENDPOINT,
                         client_secret=CLIENT_SECRET,
                         authorization_response=bottle.request.url)
     return bottle.redirect('/graphcall')
@@ -48,7 +47,7 @@ def authorized():
 @bottle.view('graphcall.html')
 def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
-    endpoint = 'https://graph.microsoft.com/v1.0/me'
+    endpoint = RESOURCE + API_VERSION + '/me'
     graphdata = MSGRAPH.get(endpoint).json()
     return {'graphdata': graphdata, 'endpoint': endpoint, 'sample': 'Requests-OAuthlib'}
 

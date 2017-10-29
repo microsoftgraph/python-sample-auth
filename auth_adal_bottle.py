@@ -11,10 +11,8 @@ from adal import AuthenticationContext
 import bottle
 import requests
 
-with open('config.txt') as configfile:
-    CLIENT_ID, CLIENT_SECRET, *_ = configfile.read().splitlines()
-REDIRECT_URI = 'http://localhost:5000/login/authorized'
-RESOURCE = 'https://graph.microsoft.com'
+from config import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
+from config import RESOURCE, API_VERSION, AUTHORITY_URL
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' # enable non-HTTPS for testing
 
 SESSION = requests.Session()
@@ -32,19 +30,20 @@ def login():
     """Prompt user to authenticate."""
     auth_state = str(uuid.uuid4())
     SESSION.auth_state = auth_state
-    return bottle.redirect('https://login.microsoftonline.com/common/oauth2/authorize?'+ \
+    # note that we don't use the AUTH_ENDPOINT setting from config.py below,
+    # because this sample doesn't use the v2.0 endpoint
+    return bottle.redirect(AUTHORITY_URL + '/oauth2/authorize?'+ \
         f'response_type=code&client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&'+ \
         f'state={auth_state}&resource={RESOURCE}')
 
 @bottle.route('/login/authorized')
 def authorized():
     """Handler for the application's Redirect Uri."""
-    authority_url = 'https://login.microsoftonline.com/common'
     code = bottle.request.query.code
     auth_state = bottle.request.query.state
     if auth_state != SESSION.auth_state:
         raise Exception('state returned to redirect URL does not match!')
-    auth_context = AuthenticationContext(authority_url, api_version=None)
+    auth_context = AuthenticationContext(AUTHORITY_URL, api_version=None)
     token_response = auth_context.acquire_token_with_authorization_code(
         code, REDIRECT_URI, RESOURCE, CLIENT_ID, CLIENT_SECRET)
     SESSION.headers.update( \
@@ -59,7 +58,7 @@ def authorized():
 @bottle.view('graphcall.html')
 def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
-    endpoint = 'https://graph.microsoft.com/v1.0/me'
+    endpoint = RESOURCE + API_VERSION + '/me'
     graphdata = graph_get(endpoint).json()
     return {'graphdata': graphdata, 'endpoint': endpoint, 'sample': 'ADAL'}
 

@@ -10,11 +10,7 @@ import uuid
 import requests
 from bottle import redirect, request
 
-# defaults/constants for Microsoft Graph authentication
-API_BASE = 'https://graph.microsoft.com/'
-API_VERSION = 'v1.0'
-AUTH_ENDPOINT = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize/'
-TOKEN_ENDPOINT = 'https://login.microsoftonline.com/common/oauth2/v2.0/token'
+from config import RESOURCE, API_VERSION, AUTHORITY_URL, AUTH_ENDPOINT, TOKEN_ENDPOINT
 
 class GraphSession(object):
     """Microsoft Graph connection class. Implements OAuth 2.0 Authorization Code
@@ -29,17 +25,21 @@ class GraphSession(object):
         scopes = list of required scopes/permissions
 
         These settings have default values but can be overridden if desired:
-        api_base = the base URL for calls to Microsoft Graph
+        resource = the base URL for calls to Microsoft Graph
         api_version = Graph version ('v1.0' is default, can also use 'beta')
-        auth_endpoint = authentication endpoint for Azure AD
-        token_endpoint = token endpoint for Azure AD
+        authority_url = base URL for authorization authority
+        auth_endpoint = authentication endpoint (at authority_url)
+        token_endpoint = token endpoint (at authority_url)
         cache_token = whether to cache token/state in local cache.json file
         refresh_enable = whether to auto-refresh expired tokens
         """
         self.config = {'client_id': '', 'client_secret': '', 'redirect_uri': '',
-                       'scopes': [], 'cache_token': False, 'api_base': API_BASE,
-                       'api_version': API_VERSION, 'auth_endpoint': AUTH_ENDPOINT,
-                       'refresh_enable': True, 'token_endpoint': TOKEN_ENDPOINT}
+                       'scopes': [], 'cache_token': False,
+                       'resource': RESOURCE, 'api_version': API_VERSION,
+                       'authority_url': AUTHORITY_URL,
+                       'auth_endpoint': AUTHORITY_URL + AUTH_ENDPOINT,
+                       'token_endpoint': AUTHORITY_URL + TOKEN_ENDPOINT,
+                       'refresh_enable': True}
         self.config.update(kwargs.items()) # add passed arguments to config
 
         self.initialize_state()
@@ -60,7 +60,7 @@ class GraphSession(object):
         """Convert relative endpoint (e.g., 'me') to full Graph API endpoint."""
         if url.split('/')[0].lower() in ['http:', 'https:']:
             return url
-        return urllib.parse.urljoin(self.config['api_base'] + \
+        return urllib.parse.urljoin(self.config['resource'] + \
             self.config['api_version'] + '/', url.lstrip('/'))
 
     def delete(self, url, headers=None, data=None, verify=False, params=None):
@@ -150,20 +150,20 @@ class GraphSession(object):
     def initialize_state(self):
         """Initialize connection state - sets self.state to default values."""
         self.state = {'session': requests.Session(), 'access_token': None,
-                      'refresh_token': None, 'token_expires_at': 0, 'auth_url': '',
-                      'authcode': '', 'authstate': '', 'token_scope': '',
-                      'loggedin': False}
+                      'refresh_token': None, 'token_expires_at': 0,
+                      'authorization_url': '', 'authcode': '', 'authstate': '',
+                      'token_scope': '', 'loggedin': False}
 
     def login(self):
         """Ask user to authenticate via Azure Active Directory."""
         self.state['authstate'] = str(uuid.uuid4())
-        self.state['auth_url'] = self.config['auth_endpoint'] + \
+        self.state['authorization_url'] = self.config['auth_endpoint'] + \
             '?response_type=code' + \
             '&client_id=' + self.config['client_id'] + \
             '&redirect_uri=' + self.config['redirect_uri'] + \
             '&scope=' + '%20'.join(self.config['scopes']) + \
             '&state=' + self.state['authstate']
-        redirect(self.state['auth_url'], 302)
+        redirect(self.state['authorization_url'], 302)
 
     def logout(self, redirect_to='/'):
         """Clear current Graph connection state and redirect to specified route.
@@ -183,7 +183,7 @@ class GraphSession(object):
 
         if action == 'save' and self.config['cache_token']:
             cached_values = ['access_token', 'token_expires_at', 'token_scope',
-                             'refresh_token', 'auth_url', 'loggedin']
+                             'refresh_token', 'authorization_url', 'loggedin']
             cached_data = {key:self.state[key] for key in cached_values}
             open(cachefile, 'w').write(json.dumps(cached_data))
         elif action == 'read' and self.config['cache_token']:
