@@ -67,7 +67,7 @@ You'll need to have the following in place before installing the sample:
 
 Follow these steps to install the samples:
 
-* clone this repo: ```git clone https://github.com/microsoftgraph/python-sample-auth.git```
+* Clone this repo: ```git clone https://github.com/microsoftgraph/python-sample-auth.git```
 * Creating and activating a virtual environment is encouraged but not required. If you're new to Python virtual environments, [Miniconda](https://conda.io/miniconda.html) is a great place to start.
 * In the root folder of your cloned repo, install the dependencies for the sample as listed in [requirements.txt](https://github.com/microsoftgraph/python-sample-auth/blob/master/requirements.txt) with this command: ```pip install -r requirements.txt```
 
