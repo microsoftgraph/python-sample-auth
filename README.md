@@ -14,13 +14,13 @@ This repo includes simple examples of four different approaches you can use to a
 
 ## Sample Architecture
 
-The samples in this repo all do the same simple thing: prompt the user to log in, then display their user profile data as JSON. All samples use the same names for variables, functions, routes, and templates, making it easy to see how the implementation details vary between different auth libraries.
+The samples in this repo all do the same simple thing: prompt the user to log in, then display their user profile data as JSON. All samples use the same names for variables, functions, and routes, and they also use the same HTML templates and CSS, to make it easy to see how the implementation details vary between different auth libraries.
 
-Here's a high-level diagram of how the samples implement the Authorization Code Grant workflow:
+Here's a high-level diagram of how each sample implements the Authorization Code Grant workflow:
 
 ![authentication workflow](static/images/authworkflow.png)
 
-Each ```sample_<auth library>.py``` source file has the same structure:
+Each ```sample_*.py``` source file has the same structure:
 
 1. **initial setup** &mdash; read configuration settings and instantiate auth provider
 2. **homepage() handler** &mdash; static page with a /login button
@@ -130,7 +130,7 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 ## Resources
 
-Additional information about the technologies used in this sample:
+Additional information about the technologies used in these samples:
 
 * [Microsoft Graph web site](https://developer.microsoft.com/en-us/graph/)
 * [Get access tokens to call Microsoft Graph](https://developer.microsoft.com/en-us/graph/docs/concepts/sample_overview)
