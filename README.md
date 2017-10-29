@@ -23,10 +23,10 @@ Here's a high-level diagram of how each sample implements the Authorization Code
 Each ```sample_*.py``` source file has the same structure:
 
 1. **initial setup** &mdash; read configuration settings and instantiate auth provider
-2. **homepage() handler** &mdash; static page with a /login button
-3. **login() handler** &mdash; auth provider authenticates user, Azure AD returns authorization code
-4. **authorize() handler (Redirect URI)** &mdash; use authorization code to request/save token, redirect to /graphcall
-5. **graphcall() handler** &mdash; query Microsoft Graph and display returned data
+2. **homepage()** &mdash; static page with a /login button
+3. **login()** &mdash; call auth provider to authenticate user, Azure AD returns authorization code
+4. **authorize()** (Redirect URI) &mdash; use authorization code to request/save token, redirect to /graphcall
+5. **graphcall()** &mdash; query Microsoft Graph and display returned data
 
 You can modify the samples to test specific Graph calls you'd like to make, by changing the endpoint that is being used and changing the requested scopes (permissions) to whatever that endpoint requires. For example, to retrieve your email messages instead of user profile data, change the ```/me``` endpoint to ```/me/messages``` and add ```Mail.Read``` to the scopes requested. With those changes, the sample will display a JSON document that contains the top ten messages from your mailbox.
 
