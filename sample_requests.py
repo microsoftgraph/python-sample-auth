@@ -1,4 +1,4 @@
-"""sample.py - Requests-OAuthlib sample for Microsoft Graph """
+"""sample_requests.py - Requests-OAuthlib sample for Microsoft Graph """
 # Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
 # See LICENSE in the project root for license information.
 import os
