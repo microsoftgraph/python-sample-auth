@@ -100,7 +100,7 @@ Follow these steps to register a new application:
 
 7. Enter *http://localhost:5000/login/authorized* as the Redirect URL, then choose **Save**.
 
-As the final step in configuring the sample, create a text file named ```config.txt``` in the root folder of your cloned repo, and put your Application Id (also known as a *client ID*) on the first line of the file and your password (also known as a *client secret*) on the second line of the file. This file is read by each of the samples on startup, to get the configuration information for your registered application.
+As the final step in configuring the sample, modify the [config.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/config.py) file in the root folder of your cloned repo, and follow the instructions to enter your Client ID and Client Secret (which are referred to as Application Id and Password in the app registration portal). Then save the change, and you're ready to run the samples.
 
 ### Running the Samples
 
