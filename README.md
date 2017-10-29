@@ -6,31 +6,11 @@ To make calls to [Microsoft Graph](https://developer.microsoft.com/en-us/graph/)
 
 This repo includes simple examples of four different approaches you can use to authenticate with Azure AD from a Python web application. Each sample implements the OAuth 2.0 [Authorization Code Grant](https://tools.ietf.org/html/rfc6749#section-4.1) workflow, which is the recommended approach for web applications written in Python.
 
-* [Python Auth Options](#python-auth-options)
 * [Sample Architecture](#sample-architecture)
 * [Using the Samples](#using-the-samples)
+* [Python Auth Options](#python-auth-options)
 * [Contributing](#contributing)
 * [Resources](#resources)
-
-## Python Auth Options
-
-The following is a summary of the authentication options that are demonstrated by the code samples in this repo.
-
-### Microsoft ADAL (sample_adal.py)
-
-The [sample_adal.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/sample_adal.py) sample demonstrates how to use the [Microsoft Azure Active Directory Authentication Library (ADAL) for Python](https://github.com/AzureAD/azure-activedirectory-library-for-python) for authentication to Microsoft Graph. ADAL supports a variety of token acquisition methods and can be used for other Azure AD authentication scenarios in addition to working with Graph. ADAL does not provide support for [Microsoft Accounts](https://account.microsoft.com/account/Account) (MSAs) or [incremental consent](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-compare#incremental-and-dynamic-consent), so if you need those capabilities one of the other options below may be a better fit.
-
-### Flask-OAuthlib (sample_flask.py)
-
-If you're building a [Flask](http://flask.pocoo.org/)-based web application, the [Flask-OAuthlib](https://flask-oauthlib.readthedocs.io/en/latest/) provides a simple way to authenticate with Azure AD for Microsoft Graph. The [sample_flask.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/sample_flask.py) sample demonstrates how to use Flask-OAuthlib to authenticate for Microsoft Graph.
-
-### Request-OAuthlib (sample_requests.py)
-
-If you're using [Requests](http://docs.python-requests.org/en/master/), the most popular HTTP library for Python developers, [Requests-OAuthlib](https://github.com/requests/requests-oauthlib) is a good option for Microsoft Graph authentication. The [sample_requests.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/sample_requests.py) sample demonstrates how to use Requests-OAuthlib to authenticate for Microsoft Graph.
-
-### graphrest module (sample_graphrest.py)
-
-If you're interested in developing your own authentication module, or are curious about the details of implementing OAuth 2.0 authentication for a web application, the [sample_graphrest.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/sample_graphrest.py) sample provides an example of authenticating with [graphrest](https://github.com/microsoftgraph/python-sample-auth/blob/master/graphrest.py), a custom auth library written in Python. Note that this sample uses the [Bottle](https://bottlepy.org/docs/dev/) web framework, although it is relatively easy to port it to Flask or any other web framework that supports redirects and provides access to request query parameters.
 
 ## Sample Architecture
 
@@ -119,6 +99,26 @@ The first time you log in to the app under a particular identity, you will be pr
 You'll then see the following screen, which shows that the app has successfully read your profile information from Microsoft Graph:
 
 ![sample output](static/images/graphcall.png)
+
+## Python Auth Options
+
+The following is a summary of the authentication options that are demonstrated by the code samples in this repo.
+
+### Microsoft ADAL (sample_adal.py)
+
+The [sample_adal.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/sample_adal.py) sample demonstrates how to use the [Microsoft Azure Active Directory Authentication Library (ADAL) for Python](https://github.com/AzureAD/azure-activedirectory-library-for-python) for authentication to Microsoft Graph. ADAL supports a variety of token acquisition methods and can be used for other Azure AD authentication scenarios in addition to working with Graph. ADAL does not provide support for [Microsoft Accounts](https://account.microsoft.com/account/Account) (MSAs) or [incremental consent](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-compare#incremental-and-dynamic-consent), so if you need those capabilities one of the other options below may be a better fit.
+
+### Flask-OAuthlib (sample_flask.py)
+
+If you're building a [Flask](http://flask.pocoo.org/)-based web application, the [Flask-OAuthlib](https://flask-oauthlib.readthedocs.io/en/latest/) provides a simple way to authenticate with Azure AD for Microsoft Graph. The [sample_flask.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/sample_flask.py) sample demonstrates how to use Flask-OAuthlib to authenticate for Microsoft Graph.
+
+### Request-OAuthlib (sample_requests.py)
+
+If you're using [Requests](http://docs.python-requests.org/en/master/), the most popular HTTP library for Python developers, [Requests-OAuthlib](https://github.com/requests/requests-oauthlib) is a good option for Microsoft Graph authentication. The [sample_requests.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/sample_requests.py) sample demonstrates how to use Requests-OAuthlib to authenticate for Microsoft Graph.
+
+### graphrest module (sample_graphrest.py)
+
+If you're interested in developing your own authentication module, or are curious about the details of implementing OAuth 2.0 authentication for a web application, the [sample_graphrest.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/sample_graphrest.py) sample provides an example of authenticating with [graphrest](https://github.com/microsoftgraph/python-sample-auth/blob/master/graphrest.py), a custom auth library written in Python. Note that this sample uses the [Bottle](https://bottlepy.org/docs/dev/) web framework, although it is relatively easy to port it to Flask or any other web framework that supports redirects and provides access to request query parameters.
 
 ## Contributing
 
