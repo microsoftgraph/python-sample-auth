@@ -18,7 +18,7 @@ The following is a summary of the authentication options that are demonstrated b
 
 ### Microsoft ADAL (auth_adal.py)
 
-The [auth_adal.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_adal.py) sample demonstrates how to use the [Microsoft Azure Active Directory Authentication Library (ADAL) for Python](https://github.com/AzureAD/azure-activedirectory-library-for-python) for authentication to Microsoft Graph. ADAL supports a variety of token acquisition methods and can be used for other Azure AD authentication scenarios in addition to working with Graph. ADAL does not provide support for [Microsoft Accounts](https://account.microsoft.com/account/Account) (MSAs) or [incremental consent](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-compare), so if you need those capabilities one of the other options below may be a better fit.
+The [auth_adal.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_adal.py) sample demonstrates how to use the [Microsoft Azure Active Directory Authentication Library (ADAL) for Python](https://github.com/AzureAD/azure-activedirectory-library-for-python) for authentication to Microsoft Graph. ADAL supports a variety of token acquisition methods and can be used for other Azure AD authentication scenarios in addition to working with Graph. ADAL does not provide support for [Microsoft Accounts](https://account.microsoft.com/account/Account) (MSAs) or [incremental consent](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-compare#incremental-and-dynamic-consent), so if you need those capabilities one of the other options below may be a better fit.
 
 ### Flask-OAuthlib (auth_flask.py)
 
@@ -75,7 +75,7 @@ Following the above steps will install all of the dependencies needed for all fo
 
 | Sample | Auth Library | Dependencies |
 | ------ | ------------ | ------------ |
-| [auth_adal.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_adal.py}) | [Microsoft ADAL](https://github.com/AzureAD/azure-activedirectory-library-for-python) | <ul><li>adal</li><li>requests</li><li>flask</li></ul> |
+| [auth_adal.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_adal.py) | [Microsoft ADAL](https://github.com/AzureAD/azure-activedirectory-library-for-python) | <ul><li>adal</li><li>requests</li><li>flask</li></ul> |
 | [auth_flask.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_flask.py) | [Flask-OAuthlib](https://flask-oauthlib.readthedocs.io/en/latest/) | <ul><li>flask</li><li>flask-oauthlib</li></ul> |
 | [auth_requests.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_requests.py) | [Requests-OAuthlib](https://github.com/requests/requests-oauthlib) | <ul><li>requests</li><li>requests-oauthlib</li><li>bottle</li></ul> |
 | [auth_graphrest.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_graphrest.py) | [graphrest module](https://github.com/microsoftgraph/python-sample-auth/blob/master/graphrest.py) | <ul><li>requests</li><li>bottle</li></ul> |
@@ -135,7 +135,6 @@ Additional information about the technologies used in this sample:
 * [Microsoft ADAL for Python](https://github.com/AzureAD/azure-activedirectory-library-for-python)
 * [Flask-Oauthlib](https://flask-oauthlib.readthedocs.io/en/latest/)
 * [Requests-Oauthlib](https://media.readthedocs.org/pdf/requests-oauthlib/latest/requests-oauthlib.pdf)
-* [graphrest module](graphrest.md)
 * [Azure Active Directory v2.0 authentication libraries](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-libraries)
 * [Oauth 2.0 specification](http://www.rfc-editor.org/rfc/rfc6749.txt)
 * [Open ID Connect specifications](http://openid.net/connect/)
