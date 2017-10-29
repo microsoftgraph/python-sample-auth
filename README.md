@@ -75,10 +75,10 @@ Following the above steps will install all of the dependencies needed for all fo
 
 | Sample | Auth Library | Dependencies |
 | ------ | ------------ | ------------ |
-| [auth_adal.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_adal.py}) | [Microsoft ADAL](https://github.com/AzureAD/azure-activedirectory-library-for-python) | adal requests flask |
-| [auth_flask.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_flask.py) | [Flask-OAuthlib](https://flask-oauthlib.readthedocs.io/en/latest/) | flask flask-oauthlib |
-| [auth_requests.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_requests.py) | [Requests-OAuthlib](https://github.com/requests/requests-oauthlib) | requests requests-oauthlib bottle |
-| [auth_graphrest.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_graphrest.py) | [graphrest module](https://github.com/microsoftgraph/python-sample-auth/blob/master/graphrest.py) | requests bottle |
+| [auth_adal.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_adal.py}) | [Microsoft ADAL](https://github.com/AzureAD/azure-activedirectory-library-for-python) | <ul><li>adal</li><li>requests</li><li>flask</li></ul> |
+| [auth_flask.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_flask.py) | [Flask-OAuthlib](https://flask-oauthlib.readthedocs.io/en/latest/) | <ul><li>flask</li><li>flask-oauthlib</li></ul> |
+| [auth_requests.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_requests.py) | [Requests-OAuthlib](https://github.com/requests/requests-oauthlib) | <ul><li>requests</li><li>requests-oauthlib</li><li>bottle</li></ul> |
+| [auth_graphrest.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/auth_graphrest.py) | [graphrest module](https://github.com/microsoftgraph/python-sample-auth/blob/master/graphrest.py) | <ul><li>requests</li><li>bottle</li></ul> |
 
 ### Configuration
 
