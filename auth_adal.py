@@ -12,7 +12,7 @@ from config import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI
 from config import RESOURCE, API_VERSION, AUTHORITY_URL
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' # enable non-HTTPS for testing
 
-APP = Flask(__name__)
+APP = Flask(__name__, template_folder='static/templates')
 APP.debug = True
 APP.secret_key = 'development'
 

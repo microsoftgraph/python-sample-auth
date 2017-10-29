@@ -17,7 +17,7 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 os.environ['OAUTHLIB_IGNORE_SCOPE_CHANGE'] = '1'
 
-bottle.TEMPLATE_PATH.insert(0, './templates') # template files are in /templates
+bottle.TEMPLATE_PATH = ['./static/templates']
 
 @bottle.route('/')
 @bottle.view('homepage.html')

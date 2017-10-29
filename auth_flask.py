@@ -9,7 +9,7 @@ from flask_oauthlib.client import OAuth
 from config import CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, RESOURCE, API_VERSION
 from config import AUTHORITY_URL, AUTH_ENDPOINT, TOKEN_ENDPOINT
 
-APP = Flask(__name__)
+APP = Flask(__name__, template_folder='static/templates')
 APP.debug = True
 APP.secret_key = 'development'
 

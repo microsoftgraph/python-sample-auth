@@ -17,7 +17,7 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' # enable non-HTTPS for testing
 
 SESSION = requests.Session()
 
-bottle.TEMPLATE_PATH.insert(0, './templates') # template files are in /templates
+bottle.TEMPLATE_PATH = ['./static/templates']
 
 @bottle.route('/')
 @bottle.view('homepage.html')

@@ -12,7 +12,7 @@ MSGRAPH = graphrest.GraphSession(client_id=CLIENT_ID,
                                  redirect_uri=REDIRECT_URI,
                                  scopes=['User.Read'])
 
-bottle.TEMPLATE_PATH.insert(0, './templates') # template files are in /templates
+bottle.TEMPLATE_PATH = ['./static/templates']
 
 @bottle.route('/')
 @bottle.view('homepage.html')
