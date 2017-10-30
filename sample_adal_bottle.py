@@ -1,7 +1,4 @@
-"""sample_adal_bottle.py - ADAL/Bottle sample for Microsoft Graph
-This is a variation on the Flask-based sample auth_adal.py, using the
-Bottle web framework instead of Flask.
-"""
+"""sample_adal_bottle.py - ADAL/Bottle sample for Microsoft Graph"""
 # Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
 # See LICENSE in the project root for license information.
 import os
@@ -59,14 +56,9 @@ def authorized():
 def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
     endpoint = RESOURCE + API_VERSION + '/me'
-    graphdata = graph_get(endpoint).json()
-    return {'graphdata': graphdata, 'endpoint': endpoint, 'sample': 'ADAL'}
-
-def graph_get(endpoint, stream=False):
-    """Do a GET to specified Graph endpoint, return Requests response object.
-    Pass stream=True for streaming response (such as image data)."""
     http_headers = {'client-request-id': str(uuid.uuid4())}
-    return SESSION.get(endpoint, headers=http_headers, stream=stream)
+    graphdata = SESSION.get(endpoint, headers=http_headers, stream=False).json()
+    return {'graphdata': graphdata, 'endpoint': endpoint, 'sample': 'ADAL'}
 
 @bottle.route('/static/<filepath:path>')
 def server_static(filepath):

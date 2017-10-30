@@ -1,4 +1,4 @@
-"""sample_adal.py - ADAL sample for Microsoft Graph """
+"""sample_adal.py - ADAL/Flask sample for Microsoft Graph """
 # Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
 # See LICENSE in the project root for license information.
 import os
@@ -56,17 +56,12 @@ def authorized():
 def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
     endpoint = RESOURCE + API_VERSION + '/me'
-    graphdata = graph_get(endpoint).json()
+    http_headers = {'client-request-id': str(uuid.uuid4())}
+    graphdata = SESSION.get(endpoint, headers=http_headers, stream=False).json()
     return render_template('graphcall.html',
                            graphdata=graphdata,
                            endpoint=endpoint,
                            sample='ADAL')
-
-def graph_get(endpoint, stream=False):
-    """Do a GET to specified Graph endpoint, return Requests response object.
-    Pass stream=True for streaming response (such as image data)."""
-    http_headers = {'client-request-id': str(uuid.uuid4())}
-    return SESSION.get(endpoint, headers=http_headers, stream=stream)
 
 if __name__ == '__main__':
     APP.run()
