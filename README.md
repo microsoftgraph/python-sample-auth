@@ -100,7 +100,7 @@ You'll then see the following screen, which shows that the app has successfully 
 
 ![sample output](static/images/graphcall.png)
 
-## Python Auth Options
+## Python auth options
 
 The following is a summary of the authentication options that the code samples in this repo demonstrate.
 
