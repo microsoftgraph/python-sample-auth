@@ -1,4 +1,4 @@
-"""graphrest.py - sample Microsoft Graph authentication library"""
+"""sample Microsoft Graph authentication library"""
 # Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
 # See LICENSE in the project root for license information.
 import json
@@ -8,16 +8,18 @@ import urllib.parse
 import uuid
 
 import requests
-from bottle import redirect, request
+import bottle
 
-from config import RESOURCE, API_VERSION, AUTHORITY_URL, AUTH_ENDPOINT, TOKEN_ENDPOINT
+import config
 
 class GraphSession(object):
     """Microsoft Graph connection class. Implements OAuth 2.0 Authorization Code
     Grant workflow, handles configuration and state management, adding tokens
     for authenticated calls to Graph, related details."""
+
     def __init__(self, **kwargs):
-        """
+        """Initialize instance with default values and user-provided overrides
+
         These settings must be specified at runtime:
         client_id = client ID (application ID) from app registration portal
         client_secret = client secret (password) from app registration portal
@@ -35,18 +37,18 @@ class GraphSession(object):
         """
         self.config = {'client_id': '', 'client_secret': '', 'redirect_uri': '',
                        'scopes': [], 'cache_token': False,
-                       'resource': RESOURCE, 'api_version': API_VERSION,
-                       'authority_url': AUTHORITY_URL,
-                       'auth_endpoint': AUTHORITY_URL + AUTH_ENDPOINT,
-                       'token_endpoint': AUTHORITY_URL + TOKEN_ENDPOINT,
+                       'resource': config.RESOURCE, 'api_version': config.API_VERSION,
+                       'authority_url': config.AUTHORITY_URL,
+                       'auth_endpoint': config.AUTHORITY_URL + config.AUTH_ENDPOINT,
+                       'token_endpoint': config.AUTHORITY_URL + config.TOKEN_ENDPOINT,
                        'refresh_enable': True}
         self.config.update(kwargs.items()) # add passed arguments to config
 
         self.initialize_state()
         self.manage_cache('read')
 
-        # if refresh tokens are enabled, add the offline_access scope.
-        # # Note that refresh_enable setting takes precedence over whether
+        # If refresh tokens are enabled, add the offline_access scope.
+        # Note that refresh_enable setting takes precedence over whether
         # the offline_access scope is explicitly requested.
         refresh_scope = 'offline_access'
         if self.config['refresh_enable']:
@@ -58,39 +60,40 @@ class GraphSession(object):
 
     def api_endpoint(self, url):
         """Convert relative endpoint (e.g., 'me') to full Graph API endpoint."""
-        if url.split('/')[0].lower() in ['http:', 'https:']:
+        if urllib.parse.urlparse(url).scheme in ['http', 'https']:
             return url
-        return urllib.parse.urljoin(self.config['resource'] + \
-            self.config['api_version'] + '/', url.lstrip('/'))
+        return urllib.parse.urljoin(
+            f"{self.config['resource']}{self.config['api_version']}/",
+            url.lstrip('/'))
 
-    def delete(self, url, headers=None, data=None, verify=False, params=None):
+    def delete(self, url, *, headers=None, data=None, verify=False, params=None):
         """Wrapper for authenticated HTTP DELETE to API endpoint.
+
         verify = Requests option for verifying SSL certificate; defaults
                  to False for demo purposes. For more information see:
         http://docs.python-requests.org/en/master/user/advanced/#ssl-csert-verification
         Returns a Requests response object.
         """
         self.token_validation()
-        return self.state['session'].delete(self.api_endpoint(url), \
-            headers=self.http_request_headers(headers), \
-            data=data, verify=verify, params=params)
+        return self.state['session'].delete(self.api_endpoint(url),
+                                            headers=self.http_request_headers(headers),
+                                            data=data, verify=verify, params=params)
 
-    def fetch_token(self, authcode):
-        """attempt to fetch an access token, using specified authorization code."""
-        self.state['authcode'] = authcode
-        response = self.state['session'].post( \
-            self.config['token_endpoint'], \
+    def fetch_token(self, auth_code):
+        """Attempt to fetch an access token, using specified authorization code."""
+        self.state['authcode'] = auth_code
+        response = self.state['session'].post(
+            self.config['token_endpoint'],
             data={'client_id': self.config['client_id'],
                   'client_secret': self.config['client_secret'],
                   'grant_type': 'authorization_code',
-                  'code': authcode,
+                  'code': auth_code,
                   'redirect_uri': self.config['redirect_uri']})
 
         if self.parse_json_web_token(response):
-            return response # valid token saved
-        return None # token request failed
+            return response # Valid token was saved.
 
-    def get(self, endpoint, headers=None, stream=False, jsononly=False):
+    def get(self, endpoint, *, headers=None, stream=False, jsononly=False):
         """Wrapper for authenticated HTTP GET from API endpoint.
 
         endpoint = absolute or relative URL (e.g., "me/contacts")
@@ -103,12 +106,11 @@ class GraphSession(object):
         Returns a Requests response object.
         """
         self.token_validation()
-        response = self.state['session'].get(self.api_endpoint(endpoint), \
-            headers=self.http_request_headers(headers), stream=stream)
+        response = self.state['session'].get(self.api_endpoint(endpoint),
+                                             headers=self.http_request_headers(headers),
+                                             stream=stream)
 
-        if jsononly:
-            return response.json().get('value', None)
-        return response
+        return response.json().get('value', None) if jsononly else response
 
     def get_token(self, redirect_to='/'):
         """Redirect URL handler. For AuthCode workflow, uses the authorization
@@ -117,23 +119,21 @@ class GraphSession(object):
 
         # Verify that this authorization attempt came from this app, by checking
         # the received state against what we sent with our authorization request.
-        if self.state['authstate'] != request.query.state:
-            raise Exception(' -> SHUTTING DOWN: state mismatch' + \
-                '\n\nState SENT: {0}\n\nState RECEIVED: {1}'. \
-                format(str(self.state['authstate']), str(request.query.state)))
+        if self.state['authstate'] != bottle.request.query.state:
+            raise Exception(f"STATE MISMATCH: {self.state['authstate']} sent,"
+                            f"{bottle.request.query.state} received")
         self.state['authstate'] = '' # clear state to prevent re-use
 
-        token_response = self.fetch_token(request.query.code)
+        token_response = self.fetch_token(bottle.request.query.code)
         if not token_response or not token_response.ok:
-            return redirect(redirect_to) # token request failed
-
+            return bottle.redirect(redirect_to) # token request failed
         self.manage_cache('save')
-
-        return redirect(redirect_to)
+        return bottle.redirect(redirect_to)
 
     def http_request_headers(self, headers=None):
         """Returns dictionary of the default HTTP headers used for calls to
         the Graph API, including access token.
+
         headers = optional additional headers or overrides for the default
                   headers, to be merged into returned dictionary"""
         token = self.state['access_token']
@@ -163,7 +163,7 @@ class GraphSession(object):
             '&redirect_uri=' + self.config['redirect_uri'] + \
             '&scope=' + '%20'.join(self.config['scopes']) + \
             '&state=' + self.state['authstate']
-        redirect(self.state['authorization_url'], 302)
+        bottle.redirect(self.state['authorization_url'], 302)
 
     def logout(self, redirect_to='/'):
         """Clear current Graph connection state and redirect to specified route.
@@ -172,32 +172,34 @@ class GraphSession(object):
         self.initialize_state()
         self.manage_cache('clear')
         if redirect_to:
-            redirect(redirect_to)
+            bottle.redirect(redirect_to)
 
     def manage_cache(self, action):
         """Manage cached state
         'save' = save current state (if self.config['cache_token'])
         'read' = restore state from cached version (if self.config['cache_token'])
         'clear' = clear cached state"""
-        cachefile = 'cache.json'
+        cache_file = 'cache.json'
 
         if action == 'save' and self.config['cache_token']:
             cached_values = ['access_token', 'token_expires_at', 'token_scope',
                              'refresh_token', 'authorization_url', 'loggedin']
             cached_data = {key:self.state[key] for key in cached_values}
-            open(cachefile, 'w').write(json.dumps(cached_data))
+            with open(cache_file, 'w') as fhandle:
+                fhandle.write(json.dumps(cached_data))
         elif action == 'read' and self.config['cache_token']:
-            if os.path.isfile(cachefile):
-                cached_data = json.loads(open(cachefile).read())
+            if os.path.isfile(cache_file):
+                with open(cache_file) as fhandle:
+                    cached_data = json.loads(fhandle.read())
                 self.state.update(cached_data)
                 self.token_validation()
                 self.manage_cache('save') # update cache with current state
-        else:
-            if os.path.isfile(cachefile):
-                os.remove(cachefile)
+        elif os.path.isfile(cache_file):
+            os.remove(cache_file)
 
     def parse_json_web_token(self, response):
         """Parse a retrieved access token out of the JWT and save it.
+
         response = response object returned by self.config['token_endpoint']
         Returns True if the token was successfully saved, False if not.
         To manually inspect the contents of a JWT, see http://jwt.ms/"""
@@ -215,40 +217,40 @@ class GraphSession(object):
         self.state['refresh_token'] = jsondata.get('refresh_token', None)
         return True
 
-    def patch(self, url, headers=None, data=None, verify=False, params=None):
+    def patch(self, url, *, headers=None, data=None, verify=False, params=None):
         """Wrapper for authenticated HTTP PATCH to API endpoint.
         Returns a Requests response object.
         """
         self.token_validation()
-        return self.state['session'].patch(self.api_endpoint(url), \
-            headers=self.http_request_headers(headers), \
-            data=data, verify=verify, params=params)
+        return self.state['session'].patch(self.api_endpoint(url),
+                                           headers=self.http_request_headers(headers),
+                                           data=data, verify=verify, params=params)
 
-    def post(self, url, headers=None, data=None, verify=False, params=None):
+    def post(self, url, *, headers=None, data=None, verify=False, params=None):
         """Wrapper for authenticated HTTP POST to API endpoint.
         Returns a Requests response object.
         """
         self.token_validation()
-        return self.state['session'].post(self.api_endpoint(url), \
-            headers=self.http_request_headers(headers), \
-            data=data, verify=verify, params=params)
+        return self.state['session'].post(self.api_endpoint(url),
+                                          headers=self.http_request_headers(headers),
+                                          data=data, verify=verify, params=params)
 
     def refresh_access_token(self):
         """Refresh the current access token."""
         if not self.config.get('refresh_enable', False):
             return
-        response = self.state['session'].post( \
-            self.config['token_endpoint'], \
+        response = self.state['session'].post(
+            self.config['token_endpoint'],
             data={'client_id': self.config['client_id'],
                   'client_secret': self.config['client_secret'],
                   'grant_type': 'refresh_token',
-                  'refresh_token': self.state['refresh_token']}, verify=False)
+                  'refresh_token': self.state['refresh_token']},
+            verify=False)
         self.parse_json_web_token(response)
 
     def token_seconds(self):
         """Return number of seconds until current access token will expire."""
-        if not self.state['access_token'] or \
-            time.time() >= self.state['token_expires_at']:
+        if not self.state['access_token'] or time.time() >= self.state['token_expires_at']:
             return 0
         return int(self.state['token_expires_at'] - time.time())
 

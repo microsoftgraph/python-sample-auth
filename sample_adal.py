@@ -1,4 +1,4 @@
-"""sample_adal.py - ADAL/Flask sample for Microsoft Graph """
+"""ADAL/Flask sample for Microsoft Graph """
 # Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
 # See LICENSE in the project root for license information.
 import os
@@ -30,9 +30,11 @@ def login():
     SESSION.auth_state = auth_state
     # note that we don't use the AUTH_ENDPOINT setting from config.py below,
     # because this sample doesn't use the v2.0 endpoint
-    return redirect(AUTHORITY_URL + '/oauth2/authorize?'+ \
-        f'response_type=code&client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&'+ \
-        f'state={auth_state}&resource={RESOURCE}')
+    return redirect(AUTHORITY_URL + '/oauth2/authorize?'+
+                    f'response_type=code&client_id={CLIENT_ID}&' +
+                    f'redirect_uri={REDIRECT_URI}&'+
+                    f'state={auth_state}&' +
+                    f'resource={RESOURCE}')
 
 @APP.route('/login/authorized')
 def authorized():
@@ -44,12 +46,11 @@ def authorized():
     auth_context = AuthenticationContext(AUTHORITY_URL, api_version=None)
     token_response = auth_context.acquire_token_with_authorization_code(
         code, REDIRECT_URI, RESOURCE, CLIENT_ID, CLIENT_SECRET)
-    SESSION.headers.update( \
-        {'Authorization': f"Bearer {token_response['accessToken']}",
-         'User-Agent': 'adal-sample',
-         'Accept': 'application/json',
-         'Content-Type': 'application/json',
-         'return-client-request-id': 'true'})
+    SESSION.headers.update({'Authorization': f"Bearer {token_response['accessToken']}",
+                            'User-Agent': 'adal-sample',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'return-client-request-id': 'true'})
     return redirect('/graphcall')
 
 @APP.route('/graphcall')
