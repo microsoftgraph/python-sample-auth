@@ -46,8 +46,8 @@ class GraphSession(object):
                        'refresh_enable': True}
         self.config.update(kwargs.items()) # add passed arguments to config
 
-        self.initialize_state()
-        self.manage_cache('read')
+        self.state_initialize()
+        self.cache('read')
 
         # If refresh tokens are enabled, add the offline_access scope.
         # Note that refresh_enable setting takes precedence over whether
@@ -69,94 +69,10 @@ class GraphSession(object):
             f"{self.config['resource']}{self.config['api_version']}/",
             url.lstrip('/'))
 
-    def fetch_token(self, auth_code):
-        """Attempt to fetch an access token, using specified authorization code."""
+    def cache(self, action):
+        """Manage self.state dictionary (cached connection metadata).
 
-        self.state['authcode'] = auth_code
-        response = self.state['session'].post(
-            self.config['token_endpoint'],
-            data={'client_id': self.config['client_id'],
-                  'client_secret': self.config['client_secret'],
-                  'grant_type': 'authorization_code',
-                  'code': auth_code,
-                  'redirect_uri': self.config['redirect_uri']})
-
-        if self.parse_json_web_token(response):
-            return response # Valid token was saved.
-
-    def get_token(self, redirect_to='/'):
-        """Redirect URL handler for AuthCode workflow. Uses the authorization
-        code received from auth endpoint to call the token endpoint and obtain
-        an access token.
-        """
-
-        # Verify that this authorization attempt came from this app, by checking
-        # the received state against what we sent with our authorization request.
-        if self.state['authstate'] != bottle.request.query.state:
-            raise Exception(f"STATE MISMATCH: {self.state['authstate']} sent,"
-                            f"{bottle.request.query.state} received")
-        self.state['authstate'] = '' # clear state to prevent re-use
-
-        token_response = self.fetch_token(bottle.request.query.code)
-        if not token_response or not token_response.ok:
-            return bottle.redirect(redirect_to) # token request failed
-        self.manage_cache('save')
-        return bottle.redirect(redirect_to)
-
-    def http_headers(self, headers=None):
-        """Returns dictionary of the default HTTP headers used for calls to
-        the Graph API, including access token.
-
-        Keyword arguments:
-        headers -- optional additional headers or overrides for default headers
-        """
-
-        token = self.state['access_token']
-        merged_headers = {'User-Agent' : 'graphrest-python',
-                          'Authorization' : f'Bearer {token}',
-                          'Accept' : 'application/json',
-                          'Content-Type' : 'application/json',
-                          'client-request-id' : str(uuid.uuid4()),
-                          'return-client-request-id' : 'true'}
-        if headers:
-            merged_headers.update(headers)
-        return merged_headers
-
-    def initialize_state(self):
-        """Initialize connection state - sets self.state to default values."""
-
-        self.state = {'session': requests.Session(), 'access_token': None,
-                      'refresh_token': None, 'token_expires_at': 0,
-                      'authorization_url': '', 'authcode': '', 'authstate': '',
-                      'token_scope': '', 'loggedin': False}
-
-    def login(self):
-        """Ask user to authenticate via Azure Active Directory."""
-
-        self.state['authstate'] = str(uuid.uuid4())
-        self.state['authorization_url'] = self.config['auth_endpoint'] + \
-            '?response_type=code' + \
-            '&client_id=' + self.config['client_id'] + \
-            '&redirect_uri=' + self.config['redirect_uri'] + \
-            '&scope=' + '%20'.join(self.config['scopes']) + \
-            '&state=' + self.state['authstate']
-        bottle.redirect(self.state['authorization_url'], 302)
-
-    def logout(self, redirect_to='/'):
-        """Clear current Graph connection state and redirect to specified route.
-        If redirect_to == None, no redirection will take place and just clears
-        the current logged-in status.
-        """
-
-        self.initialize_state()
-        self.manage_cache('clear')
-        if redirect_to:
-            bottle.redirect(redirect_to)
-
-    def manage_cache(self, action):
-        """Manage cached state.
-
-        Argument value must be one of these:
+        the action argument value must be one of these:
         'save' -- save current state (if self.config['cache_token'])
         'read' -- restore state from cached version (if self.config['cache_token'])
         'clear' -- clear cached state
@@ -176,15 +92,105 @@ class GraphSession(object):
                     cached_data = json.loads(fhandle.read())
                 self.state.update(cached_data)
                 self.token_validation()
-                self.manage_cache('save') # update cache with current state
+                self.cache('save') # update cache with current state
         elif os.path.isfile(cache_file):
             os.remove(cache_file)
 
-    def parse_json_web_token(self, response):
-        """Parse a retrieved access token out of the JWT and save it.
+    def headers(self, headers=None):
+        """Returns dictionary of default HTTP headers for calls to Microsoft Graph API,
+        including access token and a unique client-request-id.
+
+        Keyword arguments:
+        headers -- optional additional headers or overrides for default headers
+        """
+
+        token = self.state['access_token']
+        merged_headers = {'User-Agent' : 'graphrest-python',
+                          'Authorization' : f'Bearer {token}',
+                          'Accept' : 'application/json',
+                          'Content-Type' : 'application/json',
+                          'client-request-id' : str(uuid.uuid4()),
+                          'return-client-request-id' : 'true'}
+        if headers:
+            merged_headers.update(headers)
+        return merged_headers
+
+    def login(self):
+        """Ask user to authenticate via Azure Active Directory."""
+
+        self.state['authstate'] = str(uuid.uuid4())
+        self.state['authorization_url'] = self.config['auth_endpoint'] + \
+            '?response_type=code' + \
+            '&client_id=' + self.config['client_id'] + \
+            '&redirect_uri=' + self.config['redirect_uri'] + \
+            '&scope=' + '%20'.join(self.config['scopes']) + \
+            '&state=' + self.state['authstate']
+        bottle.redirect(self.state['authorization_url'], 302)
+
+    def logout(self, redirect_to='/'):
+        """Clear current Graph connection state and redirect to specified route.
+        If redirect_to == None, no redirection will take place and just clears
+        the current logged-in status.
+        """
+
+        self.state_initialize()
+        self.cache('clear')
+        if redirect_to:
+            bottle.redirect(redirect_to)
+
+    def redirect_uri_handler(self, redirect_to='/'):
+        """Redirect URL handler for AuthCode workflow. Uses the authorization
+        code received from auth endpoint to call the token endpoint and obtain
+        an access token.
+        """
+
+        # Verify that this authorization attempt came from this app, by checking
+        # the received state against what we sent with our authorization request.
+        if self.state['authstate'] != bottle.request.query.state:
+            raise Exception(f"STATE MISMATCH: {self.state['authstate']} sent,"
+                            f"{bottle.request.query.state} received")
+        self.state['authstate'] = '' # clear state to prevent re-use
+
+        self.state['authcode'] = bottle.request.query.code
+        token_response = requests.post(self.config['token_endpoint'],
+                                       data={'client_id': self.config['client_id'],
+                                             'client_secret': self.config['client_secret'],
+                                             'grant_type': 'authorization_code',
+                                             'code': bottle.request.query.code,
+                                             'redirect_uri': self.config['redirect_uri']})
+        self.token_save(token_response)
+
+        if not token_response or not token_response.ok:
+            return bottle.redirect(redirect_to) # token request failed
+        self.cache('save')
+        return bottle.redirect(redirect_to)
+
+    def state_initialize(self):
+        """Initialize connection state - sets self.state to default values."""
+
+        self.state = {'access_token': None, 'refresh_token': None, 'token_expires_at': 0,
+                      'authorization_url': '', 'authcode': '', 'authstate': '',
+                      'token_scope': '', 'loggedin': False}
+
+    def token_refresh(self):
+        """Refresh the current access token."""
+
+        if not self.config.get('refresh_enable', False):
+            return
+        response = requests.post(self.config['token_endpoint'],
+                                 data={'client_id': self.config['client_id'],
+                                       'client_secret': self.config['client_secret'],
+                                       'grant_type': 'refresh_token',
+                                       'refresh_token': self.state['refresh_token']},
+                                 verify=False)
+        self.token_save(response)
+
+    def token_save(self, response):
+        """Parse an access token out of the JWT response from token endpoint and save it.
 
         Arguments:
-        response -- response object returned by self.config['token_endpoint']
+        response -- response object returned by self.config['token_endpoint'], which
+                    contains a JSON web token
 
         Returns True if the token was successfully saved, False if not.
         To manually inspect the contents of a JWT, see http://jwt.ms/.
@@ -204,20 +210,6 @@ class GraphSession(object):
         self.state['refresh_token'] = jsondata.get('refresh_token', None)
         return True
 
-    def refresh_access_token(self):
-        """Refresh the current access token."""
-
-        if not self.config.get('refresh_enable', False):
-            return
-        response = self.state['session'].post(
-            self.config['token_endpoint'],
-            data={'client_id': self.config['client_id'],
-                  'client_secret': self.config['client_secret'],
-                  'grant_type': 'refresh_token',
-                  'refresh_token': self.state['refresh_token']},
-            verify=False)
-        self.parse_json_web_token(response)
-
     def token_seconds(self):
         """Return number of seconds until current access token will expire."""
 
@@ -232,7 +224,7 @@ class GraphSession(object):
         """
 
         if self.token_seconds() < nseconds and self.config['refresh_enable']:
-            self.refresh_access_token()
+            self.token_refresh()
 
     def verify_scopes(self, token_scopes):
         """Verify that the list of scopes returned with an access token match

@@ -33,7 +33,7 @@ def login():
 def authorized():
     """Handler for the application's Redirect Uri."""
 
-    MSGRAPH.get_token(redirect_to='/graphcall')
+    MSGRAPH.redirect_uri_handler(redirect_to='/graphcall')
 
 @bottle.route('/graphcall')
 @bottle.view('graphcall.html')
@@ -42,7 +42,7 @@ def graphcall():
 
     MSGRAPH.token_validation() # Optional - assures token is valid for >5 seconds.
     endpoint = MSGRAPH.api_endpoint('me')
-    graphdata = requests.get(endpoint, headers=MSGRAPH.http_headers()).json()
+    graphdata = requests.get(endpoint, headers=MSGRAPH.headers()).json()
     return {'graphdata': graphdata,
             'endpoint': MSGRAPH.api_endpoint(endpoint),
             'sample': 'graphrest'}
