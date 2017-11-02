@@ -15,10 +15,11 @@ import config
 class GraphSession(object):
     """Microsoft Graph connection class. Implements OAuth 2.0 Authorization Code
     Grant workflow, handles configuration and state management, adding tokens
-    for authenticated calls to Graph, related details."""
+    for authenticated calls to Graph, related details.
+    """
 
     def __init__(self, **kwargs):
-        """Initialize instance with default values and user-provided overrides
+        """Initialize instance with default values and user-provided overrides.
 
         These settings must be specified at runtime:
         client_id = client ID (application ID) from app registration portal
@@ -35,6 +36,7 @@ class GraphSession(object):
         cache_token = whether to cache token/state in local cache.json file
         refresh_enable = whether to auto-refresh expired tokens
         """
+
         self.config = {'client_id': '', 'client_secret': '', 'redirect_uri': '',
                        'scopes': [], 'cache_token': False,
                        'resource': config.RESOURCE, 'api_version': config.API_VERSION,
@@ -60,27 +62,16 @@ class GraphSession(object):
 
     def api_endpoint(self, url):
         """Convert relative endpoint (e.g., 'me') to full Graph API endpoint."""
+
         if urllib.parse.urlparse(url).scheme in ['http', 'https']:
             return url
         return urllib.parse.urljoin(
             f"{self.config['resource']}{self.config['api_version']}/",
             url.lstrip('/'))
 
-    def delete(self, url, *, headers=None, data=None, verify=False, params=None):
-        """Wrapper for authenticated HTTP DELETE to API endpoint.
-
-        verify = Requests option for verifying SSL certificate; defaults
-                 to False for demo purposes. For more information see:
-        http://docs.python-requests.org/en/master/user/advanced/#ssl-csert-verification
-        Returns a Requests response object.
-        """
-        self.token_validation()
-        return self.state['session'].delete(self.api_endpoint(url),
-                                            headers=self.http_request_headers(headers),
-                                            data=data, verify=verify, params=params)
-
     def fetch_token(self, auth_code):
         """Attempt to fetch an access token, using specified authorization code."""
+
         self.state['authcode'] = auth_code
         response = self.state['session'].post(
             self.config['token_endpoint'],
@@ -93,29 +84,11 @@ class GraphSession(object):
         if self.parse_json_web_token(response):
             return response # Valid token was saved.
 
-    def get(self, endpoint, *, headers=None, stream=False, jsononly=False):
-        """Wrapper for authenticated HTTP GET from API endpoint.
-
-        endpoint = absolute or relative URL (e.g., "me/contacts")
-        headers = dictionary of HTTP request headers, can override the defaults
-                  returned by http_request_headers()
-        stream = Requests stream argument; e.g., use True for image data
-        jsononly = if True, the JSON 'value' element is returned instead of
-                   the response object
-
-        Returns a Requests response object.
-        """
-        self.token_validation()
-        response = self.state['session'].get(self.api_endpoint(endpoint),
-                                             headers=self.http_request_headers(headers),
-                                             stream=stream)
-
-        return response.json().get('value', None) if jsononly else response
-
     def get_token(self, redirect_to='/'):
-        """Redirect URL handler. For AuthCode workflow, uses the authorization
+        """Redirect URL handler for AuthCode workflow. Uses the authorization
         code received from auth endpoint to call the token endpoint and obtain
-        an access token."""
+        an access token.
+        """
 
         # Verify that this authorization attempt came from this app, by checking
         # the received state against what we sent with our authorization request.
@@ -130,12 +103,14 @@ class GraphSession(object):
         self.manage_cache('save')
         return bottle.redirect(redirect_to)
 
-    def http_request_headers(self, headers=None):
+    def http_headers(self, headers=None):
         """Returns dictionary of the default HTTP headers used for calls to
         the Graph API, including access token.
 
-        headers = optional additional headers or overrides for the default
-                  headers, to be merged into returned dictionary"""
+        Keyword arguments:
+        headers -- optional additional headers or overrides for default headers
+        """
+
         token = self.state['access_token']
         merged_headers = {'User-Agent' : 'graphrest-python',
                           'Authorization' : f'Bearer {token}',
@@ -149,6 +124,7 @@ class GraphSession(object):
 
     def initialize_state(self):
         """Initialize connection state - sets self.state to default values."""
+
         self.state = {'session': requests.Session(), 'access_token': None,
                       'refresh_token': None, 'token_expires_at': 0,
                       'authorization_url': '', 'authcode': '', 'authstate': '',
@@ -156,6 +132,7 @@ class GraphSession(object):
 
     def login(self):
         """Ask user to authenticate via Azure Active Directory."""
+
         self.state['authstate'] = str(uuid.uuid4())
         self.state['authorization_url'] = self.config['auth_endpoint'] + \
             '?response_type=code' + \
@@ -167,18 +144,24 @@ class GraphSession(object):
 
     def logout(self, redirect_to='/'):
         """Clear current Graph connection state and redirect to specified route.
-        If redirect_to == None, no redirection will take place and we just
-        clear the current logged-in status."""
+        If redirect_to == None, no redirection will take place and just clears
+        the current logged-in status.
+        """
+
         self.initialize_state()
         self.manage_cache('clear')
         if redirect_to:
             bottle.redirect(redirect_to)
 
     def manage_cache(self, action):
-        """Manage cached state
-        'save' = save current state (if self.config['cache_token'])
-        'read' = restore state from cached version (if self.config['cache_token'])
-        'clear' = clear cached state"""
+        """Manage cached state.
+
+        Argument value must be one of these:
+        'save' -- save current state (if self.config['cache_token'])
+        'read' -- restore state from cached version (if self.config['cache_token'])
+        'clear' -- clear cached state
+        """
+
         cache_file = 'cache.json'
 
         if action == 'save' and self.config['cache_token']:
@@ -200,9 +183,13 @@ class GraphSession(object):
     def parse_json_web_token(self, response):
         """Parse a retrieved access token out of the JWT and save it.
 
-        response = response object returned by self.config['token_endpoint']
+        Arguments:
+        response -- response object returned by self.config['token_endpoint']
+
         Returns True if the token was successfully saved, False if not.
-        To manually inspect the contents of a JWT, see http://jwt.ms/"""
+        To manually inspect the contents of a JWT, see http://jwt.ms/.
+        """
+
         jsondata = response.json()
         if not 'access_token' in jsondata:
             self.logout(redirect_to=None)
@@ -217,26 +204,9 @@ class GraphSession(object):
         self.state['refresh_token'] = jsondata.get('refresh_token', None)
         return True
 
-    def patch(self, url, *, headers=None, data=None, verify=False, params=None):
-        """Wrapper for authenticated HTTP PATCH to API endpoint.
-        Returns a Requests response object.
-        """
-        self.token_validation()
-        return self.state['session'].patch(self.api_endpoint(url),
-                                           headers=self.http_request_headers(headers),
-                                           data=data, verify=verify, params=params)
-
-    def post(self, url, *, headers=None, data=None, verify=False, params=None):
-        """Wrapper for authenticated HTTP POST to API endpoint.
-        Returns a Requests response object.
-        """
-        self.token_validation()
-        return self.state['session'].post(self.api_endpoint(url),
-                                          headers=self.http_request_headers(headers),
-                                          data=data, verify=verify, params=params)
-
     def refresh_access_token(self):
         """Refresh the current access token."""
+
         if not self.config.get('refresh_enable', False):
             return
         response = self.state['session'].post(
@@ -250,6 +220,7 @@ class GraphSession(object):
 
     def token_seconds(self):
         """Return number of seconds until current access token will expire."""
+
         if not self.state['access_token'] or time.time() >= self.state['token_expires_at']:
             return 0
         return int(self.state['token_expires_at'] - time.time())
@@ -257,17 +228,21 @@ class GraphSession(object):
     def token_validation(self, nseconds=5):
         """Verify that current access token is valid for at least nseconds, and
         if not then attempt to refresh it. Can be used to assure a valid token
-        before making a call to Graph."""
+        before making a call to Graph.
+        """
+
         if self.token_seconds() < nseconds and self.config['refresh_enable']:
             self.refresh_access_token()
 
     def verify_scopes(self, token_scopes):
         """Verify that the list of scopes returned with an access token match
-        the scopes that we requested."""
+        the scopes that we requested.
+        """
+
         self.state['token_scope'] = token_scopes
-        scopes_returned = set([_.lower() for _ in token_scopes.split(' ')])
-        scopes_expected = set([_.lower() for _ in self.config['scopes']
-                               if _.lower() != 'offline_access'])
+        scopes_returned = frozenset({_.lower() for _ in token_scopes.split(' ')})
+        scopes_expected = frozenset({_.lower() for _ in self.config['scopes']
+                                     if _.lower() != 'offline_access'})
         if scopes_expected != scopes_returned:
-            print('WARNING: requested scopes ' + str(scopes_expected) +
-                  ' but token was returned with scopes ' + str(scopes_returned))
+            print(f'WARNING: requested scopes {list(scopes_expected)}'
+                  f' but token was returned with scopes {list(scopes_returned)}')
