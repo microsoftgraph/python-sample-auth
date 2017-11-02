@@ -12,10 +12,10 @@ MSGRAPH = requests_oauthlib.OAuth2Session(config.CLIENT_ID,
                                           scope=['User.Read'],
                                           redirect_uri=config.REDIRECT_URI)
 
-# enable non-HTTPS redirect URI for development/testing
+# Enable non-HTTPS redirect URI for development/testing.
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-# allow token scope to not match requested scope (other auth libraries allow
-# this, but Requests-OAuthlib raises exception on scope mismatch by default)
+# Allow token scope to not match requested scope. (Other auth libraries allow
+# this, but Requests-OAuthlib raises exception on scope mismatch by default.)
 os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 os.environ['OAUTHLIB_IGNORE_SCOPE_CHANGE'] = '1'
 
@@ -25,13 +25,11 @@ bottle.TEMPLATE_PATH = ['./static/templates']
 @bottle.view('homepage.html')
 def homepage():
     """Render the home page."""
-
     return {'sample': 'Requests-OAuthlib'}
 
 @bottle.route('/login')
 def login():
     """Prompt user to authenticate."""
-
     auth_base = config.AUTHORITY_URL + config.AUTH_ENDPOINT
     authorization_url, state = MSGRAPH.authorization_url(auth_base)
     MSGRAPH.auth_state = state
@@ -40,7 +38,6 @@ def login():
 @bottle.route('/login/authorized')
 def authorized():
     """Handler for the application's Redirect Uri."""
-
     if bottle.request.query.state != MSGRAPH.auth_state:
         raise Exception('state returned to redirect URL does not match!')
     MSGRAPH.fetch_token(config.AUTHORITY_URL + config.TOKEN_ENDPOINT,
@@ -52,7 +49,6 @@ def authorized():
 @bottle.view('graphcall.html')
 def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
-
     endpoint = config.RESOURCE + config.API_VERSION + '/me'
     graphdata = MSGRAPH.get(endpoint).json()
     return {'graphdata': graphdata, 'endpoint': endpoint, 'sample': 'Requests-OAuthlib'}

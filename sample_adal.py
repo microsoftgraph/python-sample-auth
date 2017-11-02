@@ -5,7 +5,7 @@ import os
 import urllib.parse
 import uuid
 
-from adal import AuthenticationContext
+import adal
 import flask
 import requests
 
@@ -22,13 +22,11 @@ SESSION = requests.Session()
 @APP.route('/')
 def homepage():
     """Render the home page."""
-
     return flask.render_template('homepage.html', sample='ADAL')
 
 @APP.route('/login')
 def login():
     """Prompt user to authenticate."""
-
     auth_state = str(uuid.uuid4())
     SESSION.auth_state = auth_state
     # Note that we don't use the config.AUTH_ENDPOINT setting below, because
@@ -43,12 +41,11 @@ def login():
 @APP.route('/login/authorized')
 def authorized():
     """Handler for the application's Redirect Uri."""
-
     code = flask.request.args['code']
     auth_state = flask.request.args['state']
     if auth_state != SESSION.auth_state:
         raise Exception('state returned to redirect URL does not match!')
-    auth_context = AuthenticationContext(config.AUTHORITY_URL, api_version=None)
+    auth_context = adal.AuthenticationContext(config.AUTHORITY_URL, api_version=None)
     token_response = auth_context.acquire_token_with_authorization_code(
         code, config.REDIRECT_URI, config.RESOURCE, config.CLIENT_ID, config.CLIENT_SECRET)
     SESSION.headers.update({'Authorization': f"Bearer {token_response['accessToken']}",
@@ -61,7 +58,6 @@ def authorized():
 @APP.route('/graphcall')
 def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
-
     endpoint = config.RESOURCE + config.API_VERSION + '/me'
     http_headers = {'client-request-id': str(uuid.uuid4())}
     graphdata = SESSION.get(endpoint, headers=http_headers, stream=False).json()

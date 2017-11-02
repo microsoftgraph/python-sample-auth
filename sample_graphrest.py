@@ -4,7 +4,6 @@
 
 import bottle
 import graphrest
-
 import requests
 
 import config
@@ -26,20 +25,17 @@ def homepage():
 @bottle.route('/login')
 def login():
     """Prompt user to authenticate."""
-
     MSGRAPH.login()
 
 @bottle.route('/login/authorized')
 def authorized():
     """Handler for the application's Redirect Uri."""
-
     MSGRAPH.redirect_uri_handler(redirect_to='/graphcall')
 
 @bottle.route('/graphcall')
 @bottle.view('graphcall.html')
 def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
-
     MSGRAPH.token_validation() # Optional - assures token is valid for >5 seconds.
     endpoint = MSGRAPH.api_endpoint('me')
     graphdata = requests.get(endpoint, headers=MSGRAPH.headers()).json()

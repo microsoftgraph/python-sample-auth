@@ -5,16 +5,14 @@ import os
 import urllib.parse
 import uuid
 
-from adal import AuthenticationContext
+import adal
 import bottle
 import requests
 
 import config
 
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' # enable non-HTTPS for testing
-
 SESSION = requests.Session()
-
 bottle.TEMPLATE_PATH = ['./static/templates']
 
 @bottle.route('/')
@@ -26,7 +24,6 @@ def homepage():
 @bottle.route('/login')
 def login():
     """Prompt user to authenticate."""
-
     auth_state = str(uuid.uuid4())
     SESSION.auth_state = auth_state
 
@@ -42,12 +39,11 @@ def login():
 @bottle.route('/login/authorized')
 def authorized():
     """Handler for the application's Redirect Uri."""
-
     code = bottle.request.query.code
     auth_state = bottle.request.query.state
     if auth_state != SESSION.auth_state:
         raise Exception('state returned to redirect URL does not match!')
-    auth_context = AuthenticationContext(config.AUTHORITY_URL, api_version=None)
+    auth_context = adal.AuthenticationContext(config.AUTHORITY_URL, api_version=None)
     token_response = auth_context.acquire_token_with_authorization_code(
         code, config.REDIRECT_URI, config.RESOURCE, config.CLIENT_ID, config.CLIENT_SECRET)
     SESSION.headers.update({'Authorization': f"Bearer {token_response['accessToken']}",
@@ -61,7 +57,6 @@ def authorized():
 @bottle.view('graphcall.html')
 def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
-
     endpoint = config.RESOURCE + config.API_VERSION + '/me'
     http_headers = {'client-request-id': str(uuid.uuid4())}
     graphdata = SESSION.get(endpoint, headers=http_headers, stream=False).json()
