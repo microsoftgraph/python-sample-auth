@@ -132,6 +132,7 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 
 * [Microsoft Graph Dev Center](https://developer.microsoft.com/en-us/graph/)
 * [Get access tokens to call Microsoft Graph](https://developer.microsoft.com/en-us/graph/docs/concepts/sample_overview)
+* [Authorize access to web applications using OAuth 2.0 and Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-oauth-code)
 * [Microsoft ADAL for Python](https://github.com/AzureAD/azure-activedirectory-library-for-python)
 * [Flask-Oauthlib](https://flask-oauthlib.readthedocs.io/en/latest/)
 * [Requests-Oauthlib](https://media.readthedocs.org/pdf/requests-oauthlib/latest/requests-oauthlib.pdf)
