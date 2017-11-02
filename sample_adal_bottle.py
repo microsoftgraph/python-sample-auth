@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
 # See LICENSE in the project root for license information.
 import os
+import urllib.parse
 import uuid
 
 from adal import AuthenticationContext
@@ -31,12 +32,12 @@ def login():
 
     # note that we don't use the AUTH_ENDPOINT setting from config.py below,
     # because this sample doesn't use the v2.0 endpoint
-    return bottle.redirect(config.AUTHORITY_URL + '/oauth2/authorize?'+
-                           f'response_type=code&' +
-                           f'client_id={config.CLIENT_ID}&' +
-                           f'redirect_uri={config.REDIRECT_URI}&'+
-                           f'state={auth_state}&' +
-                           f'resource={config.RESOURCE}')
+    params = urllib.parse.urlencode({'response_type': 'code',
+                                     'client_id': config.CLIENT_ID,
+                                     'redirect_uri': config.REDIRECT_URI,
+                                     'state': auth_state,
+                                     'resource': config.RESOURCE})
+    return bottle.redirect(config.AUTHORITY_URL + '/oauth2/authorize?' + params)
 
 @bottle.route('/login/authorized')
 def authorized():

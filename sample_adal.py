@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
 # See LICENSE in the project root for license information.
 import os
+import urllib.parse
 import uuid
 
 from adal import AuthenticationContext
@@ -30,13 +31,14 @@ def login():
 
     auth_state = str(uuid.uuid4())
     SESSION.auth_state = auth_state
-    # note that we don't use the AUTH_ENDPOINT setting from config.py below,
-    # because this sample doesn't use the v2.0 endpoint
-    return flask.redirect(config.AUTHORITY_URL + '/oauth2/authorize?'
-                          f'response_type=code&client_id={config.CLIENT_ID}&'
-                          f'redirect_uri={config.REDIRECT_URI}&'
-                          f'state={auth_state}&'
-                          f'resource={config.RESOURCE}')
+    # Note that we don't use the config.AUTH_ENDPOINT setting below, because
+    # this sample doesn't use the Azure AD v2.0 endpoint.
+    params = urllib.parse.urlencode({'response_type': 'code',
+                                     'client_id': config.CLIENT_ID,
+                                     'redirect_uri': config.REDIRECT_URI,
+                                     'state': auth_state,
+                                     'resource': config.RESOURCE})
+    return flask.redirect(config.AUTHORITY_URL + '/oauth2/authorize?' + params)
 
 @APP.route('/login/authorized')
 def authorized():

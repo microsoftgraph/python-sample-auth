@@ -119,12 +119,12 @@ class GraphSession(object):
         """Ask user to authenticate via Azure Active Directory."""
 
         self.state['authstate'] = str(uuid.uuid4())
-        self.state['authorization_url'] = self.config['auth_endpoint'] + \
-            '?response_type=code' + \
-            '&client_id=' + self.config['client_id'] + \
-            '&redirect_uri=' + self.config['redirect_uri'] + \
-            '&scope=' + '%20'.join(self.config['scopes']) + \
-            '&state=' + self.state['authstate']
+        params = urllib.parse.urlencode({'response_type': 'code',
+                                         'client_id': self.config['client_id'],
+                                         'redirect_uri': self.config['redirect_uri'],
+                                         'scope': ' '.join(self.config['scopes']),
+                                         'state': self.state['authstate']})
+        self.state['authorization_url'] = self.config['auth_endpoint'] + '?' + params
         bottle.redirect(self.state['authorization_url'], 302)
 
     def logout(self, redirect_to='/'):
