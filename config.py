@@ -15,7 +15,8 @@ TOKEN_ENDPOINT = '/oauth2/v2.0/token'
 RESOURCE = 'https://graph.microsoft.com/'
 API_VERSION = 'v1.0'
 
-if CLIENT_ID == 'PUT YOUR CLIENT ID HERE':
-    print('ERROR: config.py file does not contain valid CLIENT_ID')
+# This code can be removed after configuring CLIENT_ID and CLIENT_SECRET above.
+if ' ' in CLIENT_ID or ' ' in CLIENT_SECRET:
+    print('ERROR: config.py does not contain valid CLIENT_ID and CLIENT_SECRET')
     import sys
     sys.exit(1)
