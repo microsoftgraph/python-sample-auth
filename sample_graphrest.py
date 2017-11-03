@@ -1,6 +1,7 @@
 """graphrest sample for Microsoft Graph"""
 # Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
 # See LICENSE in the project root for license information.
+import os
 
 import bottle
 import graphrest
@@ -42,6 +43,12 @@ def graphcall():
     return {'graphdata': graphdata,
             'endpoint': MSGRAPH.api_endpoint(endpoint),
             'sample': 'graphrest'}
+
+@bottle.route('/static/<filepath:path>')
+def server_static(filepath):
+    """Handler for static files, used with the development server."""
+    root_folder = os.path.abspath(os.path.dirname(__file__))
+    return bottle.static_file(filepath, root=os.path.join(root_folder, 'static'))
 
 if __name__ == '__main__':
     bottle.run(app=bottle.app(), server='wsgiref', host='localhost', port=5000)

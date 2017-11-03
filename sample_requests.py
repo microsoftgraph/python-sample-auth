@@ -53,5 +53,11 @@ def graphcall():
     graphdata = MSGRAPH.get(endpoint).json()
     return {'graphdata': graphdata, 'endpoint': endpoint, 'sample': 'Requests-OAuthlib'}
 
+@bottle.route('/static/<filepath:path>')
+def server_static(filepath):
+    """Handler for static files, used with the development server."""
+    root_folder = os.path.abspath(os.path.dirname(__file__))
+    return bottle.static_file(filepath, root=os.path.join(root_folder, 'static'))
+
 if __name__ == '__main__':
     bottle.run(app=bottle.app(), server='wsgiref', host='localhost', port=5000)
