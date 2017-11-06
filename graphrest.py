@@ -33,12 +33,12 @@ class GraphSession(object):
         authority_url = base URL for authorization authority
         auth_endpoint = authentication endpoint (at authority_url)
         token_endpoint = token endpoint (at authority_url)
-        cache_token = whether to cache token/state in local cache.json file
+        cache_state = whether to cache session state in local state.json file
         refresh_enable = whether to auto-refresh expired tokens
         """
 
         self.config = {'client_id': '', 'client_secret': '', 'redirect_uri': '',
-                       'scopes': [], 'cache_token': False,
+                       'scopes': [], 'cache_state': False,
                        'resource': config.RESOURCE, 'api_version': config.API_VERSION,
                        'authority_url': config.AUTHORITY_URL,
                        'auth_endpoint': config.AUTHORITY_URL + config.AUTH_ENDPOINT,
@@ -46,8 +46,10 @@ class GraphSession(object):
                        'refresh_enable': True}
         self.config.update(kwargs.items()) # add passed arguments to config
 
-        self.state_initialize()
-        self.cache('read')
+        self.state_manager('init')
+
+        # used by login() and redirect_uri_handler() to identify current session
+        self.authstate = ''
 
         # If refresh tokens are enabled, add the offline_access scope.
         # Note that refresh_enable setting takes precedence over whether
@@ -68,33 +70,6 @@ class GraphSession(object):
         return urllib.parse.urljoin(
             f"{self.config['resource']}{self.config['api_version']}/",
             url.lstrip('/'))
-
-    def cache(self, action):
-        """Manage self.state dictionary (cached connection metadata).
-
-        the action argument value must be one of these:
-        'save' -- save current state (if self.config['cache_token'])
-        'read' -- restore state from cached version (if self.config['cache_token'])
-        'clear' -- clear cached state
-        """
-
-        cache_file = 'cache.json'
-
-        if action == 'save' and self.config['cache_token']:
-            cached_values = ['access_token', 'token_expires_at', 'token_scope',
-                             'refresh_token', 'authorization_url', 'loggedin']
-            cached_data = {key:self.state[key] for key in cached_values}
-            with open(cache_file, 'w') as fhandle:
-                fhandle.write(json.dumps(cached_data))
-        elif action == 'read' and self.config['cache_token']:
-            if os.path.isfile(cache_file):
-                with open(cache_file) as fhandle:
-                    cached_data = json.loads(fhandle.read())
-                self.state.update(cached_data)
-                self.token_validation()
-                self.cache('save') # update cache with current state
-        elif os.path.isfile(cache_file):
-            os.remove(cache_file)
 
     def headers(self, headers=None):
         """Returns dictionary of default HTTP headers for calls to Microsoft Graph API,
@@ -118,12 +93,12 @@ class GraphSession(object):
     def login(self):
         """Ask user to authenticate via Azure Active Directory."""
 
-        self.state['authstate'] = str(uuid.uuid4())
+        self.authstate = str(uuid.uuid4())
         params = urllib.parse.urlencode({'response_type': 'code',
                                          'client_id': self.config['client_id'],
                                          'redirect_uri': self.config['redirect_uri'],
                                          'scope': ' '.join(self.config['scopes']),
-                                         'state': self.state['authstate']})
+                                         'state': self.authstate})
         self.state['authorization_url'] = self.config['auth_endpoint'] + '?' + params
         bottle.redirect(self.state['authorization_url'], 302)
 
@@ -133,8 +108,7 @@ class GraphSession(object):
         the current logged-in status.
         """
 
-        self.state_initialize()
-        self.cache('clear')
+        self.state_manager('init')
         if redirect_to:
             bottle.redirect(redirect_to)
 
@@ -146,12 +120,11 @@ class GraphSession(object):
 
         # Verify that this authorization attempt came from this app, by checking
         # the received state against what we sent with our authorization request.
-        if self.state['authstate'] != bottle.request.query.state:
-            raise Exception(f"STATE MISMATCH: {self.state['authstate']} sent,"
+        if self.authstate != bottle.request.query.state:
+            raise Exception(f"STATE MISMATCH: {self.authstate} sent,"
                             f"{bottle.request.query.state} received")
-        self.state['authstate'] = '' # clear state to prevent re-use
+        self.authstate = '' # clear state to prevent re-use
 
-        self.state['authcode'] = bottle.request.query.code
         token_response = requests.post(self.config['token_endpoint'],
                                        data={'client_id': self.config['client_id'],
                                              'client_secret': self.config['client_secret'],
@@ -160,17 +133,35 @@ class GraphSession(object):
                                              'redirect_uri': self.config['redirect_uri']})
         self.token_save(token_response)
 
-        if not token_response or not token_response.ok:
-            return bottle.redirect(redirect_to) # token request failed
-        self.cache('save')
+        if token_response and token_response.ok:
+            self.state_manager('save')
         return bottle.redirect(redirect_to)
 
-    def state_initialize(self):
-        """Initialize connection state - sets self.state to default values."""
+    def state_manager(self, action):
+        """Manage self.state dictionary (session/connection metadata).
 
-        self.state = {'access_token': None, 'refresh_token': None, 'token_expires_at': 0,
-                      'authorization_url': '', 'authcode': '', 'authstate': '',
-                      'token_scope': '', 'loggedin': False}
+        action argument must be one of these:
+        'init' -- initialize state (set properties to defaults)
+        'save' -- save current state (if self.config['cache_state'])
+        """
+
+        initialized_state = {'access_token': None, 'refresh_token': None,
+                             'token_expires_at': 0, 'authorization_url': '',
+                             'token_scope': '', 'loggedin': False}
+        filename = 'state.json'
+
+        if action == 'init':
+            self.state = initialized_state
+            if self.config['cache_state'] and os.path.isfile(filename):
+                with open(filename) as fhandle:
+                    self.state.update(json.loads(fhandle.read()))
+                self.token_validation()
+            elif not self.config['cache_state'] and os.path.isfile(filename):
+                os.remove(filename)
+        elif action == 'save' and self.config['cache_state']:
+            with open(filename, 'w') as fhandle:
+                fhandle.write(json.dumps(
+                    {key:self.state[key] for key in initialized_state}))
 
     def token_refresh(self):
         """Refresh the current access token."""
