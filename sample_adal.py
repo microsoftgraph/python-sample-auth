@@ -29,13 +29,18 @@ def login():
     """Prompt user to authenticate."""
     auth_state = str(uuid.uuid4())
     SESSION.auth_state = auth_state
-    # Note that we don't use the config.AUTH_ENDPOINT setting below, because
-    # this sample doesn't use the Azure AD v2.0 endpoint.
+
+    # Two ways the ADAL samples differ from the other auth samples:
+    # - Use v1.0 endpoint instead of v2.0 AUTH_ENDPOINT setting.
+    # - Specified prompt=select_account parameter to force user
+    #   authentication even if already logged in.
     params = urllib.parse.urlencode({'response_type': 'code',
                                      'client_id': config.CLIENT_ID,
                                      'redirect_uri': config.REDIRECT_URI,
                                      'state': auth_state,
-                                     'resource': config.RESOURCE})
+                                     'resource': config.RESOURCE,
+                                     'prompt': 'select_account'})
+
     return flask.redirect(config.AUTHORITY_URL + '/oauth2/authorize?' + params)
 
 @APP.route('/login/authorized')
@@ -59,7 +64,8 @@ def authorized():
 def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
     endpoint = config.RESOURCE + config.API_VERSION + '/me'
-    http_headers = {'client-request-id': str(uuid.uuid4())}
+    http_headers = {'client-request-id': str(uuid.uuid4()),
+                    'SdkVersion': 'sample-python-adal-0.1.0'}
     graphdata = SESSION.get(endpoint, headers=http_headers, stream=False).json()
     return flask.render_template('graphcall.html',
                                  graphdata=graphdata,
