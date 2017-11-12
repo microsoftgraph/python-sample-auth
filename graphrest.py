@@ -85,6 +85,7 @@ class GraphSession(object):
                           'Accept' : 'application/json',
                           'Content-Type' : 'application/json',
                           'client-request-id' : str(uuid.uuid4()),
+                          'SdkVersion': 'sample-python-graphrest-0.1.0',
                           'return-client-request-id' : 'true'}
         if headers:
             merged_headers.update(headers)

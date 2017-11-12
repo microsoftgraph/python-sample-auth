@@ -50,7 +50,8 @@ def authorized():
 def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
     endpoint = config.RESOURCE + config.API_VERSION + '/me'
-    graphdata = MSGRAPH.get(endpoint).json()
+    graphdata = MSGRAPH.get(
+        endpoint, headers={'SdkVersion': 'sample-python-requests-0.1.0'}).json()
     return {'graphdata': graphdata, 'endpoint': endpoint, 'sample': 'Requests-OAuthlib'}
 
 @bottle.route('/static/<filepath:path>')
