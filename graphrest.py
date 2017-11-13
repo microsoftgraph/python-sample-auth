@@ -99,7 +99,8 @@ class GraphSession(object):
                                          'client_id': self.config['client_id'],
                                          'redirect_uri': self.config['redirect_uri'],
                                          'scope': ' '.join(self.config['scopes']),
-                                         'state': self.authstate})
+                                         'state': self.authstate,
+                                         'prompt': 'consent'})
         self.state['authorization_url'] = self.config['auth_endpoint'] + '?' + params
         bottle.redirect(self.state['authorization_url'], 302)
 
