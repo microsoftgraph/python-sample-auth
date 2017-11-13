@@ -47,11 +47,11 @@ Before installing the sample:
 
 Follow these steps to install the samples:
 
-* Clone this repo: ```git clone https://github.com/microsoftgraph/python-sample-auth.git```.
-* Create and activate a virtual environment (optional). If you're new to Python virtual environments, [Miniconda](https://conda.io/miniconda.html) is a great place to start.
-* In the root folder of your cloned repo, install the dependencies for the sample as listed in [requirements.txt](https://github.com/microsoftgraph/python-sample-auth/blob/master/requirements.txt) with this command: ```pip install -r requirements.txt```.
+1. Clone this repo: ```git clone https://github.com/microsoftgraph/python-sample-auth.git```.
+2. Create and activate a virtual environment (optional). If you're new to Python virtual environments, [Miniconda](https://conda.io/miniconda.html) is a great place to start.
+3. In the root folder of your cloned repo, install the dependencies for the sample as listed in [requirements.txt](https://github.com/microsoftgraph/python-sample-auth/blob/master/requirements.txt) with this command: ```pip install -r requirements.txt```.
 
-Following the these steps will install all the dependencies for all four options. If you only plan to use one of the options, the following table lists the Python package dependencies for each sample.
+Following the above steps will install all the dependencies for all four options. If you only plan to use one of the options, the following table lists the Python package dependencies for each sample.
 
 | Sample | Auth Library | Dependencies |
 | ------ | ------------ | ------------ |
@@ -72,9 +72,9 @@ Follow these steps to register a new application:
 
 3. Enter an application name, and choose **Create**. (Do *not* choose **Guided Setup**.)
 
-4. Next you'll see the registration page for your app. Note the **Application Id** field &mdash; save a copy of your Application Id, which you will need later to complete the configuration process.
+4. Next you'll see the registration page for your app. Copy and save the **Application Id** field.You will need it later to complete the configuration process.
 
-5. Under **Application Secrets**, choose **Generate New Password**. A new password will be displayed in the **New password generated** dialog &mdash; copy this password, which you will need later to complete the configuration process.
+5. Under **Application Secrets**, choose **Generate New Password**. A new password will be displayed in the **New password generated** dialog. Copy this password. You will need it later to complete the configuration process.
 
 6. Under **Platforms**, choose **Add platform** > **Web**.
 
