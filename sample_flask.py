@@ -44,8 +44,11 @@ def authorized():
 def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
     endpoint = 'me'
-    graphdata = MSGRAPH.get(
-        endpoint, headers={'SdkVersion': 'sample-python-flask-0.1.0'}).data
+    headers = {'SdkVersion': 'sample-python-flask',
+               'x-client-sku': 'sample-python-flask',
+               'client-request-id': str(uuid.uuid4()),
+               'return-client-request-id': 'true'}
+    graphdata = MSGRAPH.get(endpoint, headers=headers).data
     return flask.render_template('graphcall.html',
                                  graphdata=graphdata,
                                  endpoint=config.RESOURCE + config.API_VERSION + '/' + endpoint,

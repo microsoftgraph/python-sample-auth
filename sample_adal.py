@@ -57,6 +57,8 @@ def authorized():
                             'User-Agent': 'adal-sample',
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
+                            'SdkVersion': 'sample-python-adal',
+                            'x-client-sku': 'Python',
                             'return-client-request-id': 'true'})
     return flask.redirect('/graphcall')
 
@@ -64,8 +66,7 @@ def authorized():
 def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
     endpoint = config.RESOURCE + config.API_VERSION + '/me'
-    http_headers = {'client-request-id': str(uuid.uuid4()),
-                    'SdkVersion': 'sample-python-adal-0.1.0'}
+    http_headers = {'client-request-id': str(uuid.uuid4())}
     graphdata = SESSION.get(endpoint, headers=http_headers, stream=False).json()
     return flask.render_template('graphcall.html',
                                  graphdata=graphdata,

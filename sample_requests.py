@@ -2,6 +2,7 @@
 # Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
 # See LICENSE in the project root for license information.
 import os
+import uuid
 
 import bottle
 import requests_oauthlib
@@ -50,8 +51,12 @@ def authorized():
 def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
     endpoint = config.RESOURCE + config.API_VERSION + '/me'
-    graphdata = MSGRAPH.get(
-        endpoint, headers={'SdkVersion': 'sample-python-requests-0.1.0'}).json()
+    headers = {'SdkVersion': 'sample-python-requests-0.1.0',
+               'x-client-sku': 'sample-python-requests',
+               'SdkVersion': 'sample-python-requests',
+               'client-request-id': str(uuid.uuid4()),
+               'return-client-request-id': 'true'}
+    graphdata = MSGRAPH.get(endpoint, headers=headers).json()
     return {'graphdata': graphdata, 'endpoint': endpoint, 'sample': 'Requests-OAuthlib'}
 
 @bottle.route('/static/<filepath:path>')

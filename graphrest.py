@@ -62,6 +62,12 @@ class GraphSession(object):
             if refresh_scope in self.config['scopes']:
                 self.config['scopes'].remove(refresh_scope)
 
+    def __repr__(self):
+        """Return string representation of class instance."""
+        return ('<GraphSession(loggedin='
+                f'{"True" if self.state["loggedin"] else "False"}'
+                f', client_id={self.config["client_id"]})>')
+
     def api_endpoint(self, url):
         """Convert relative endpoint (e.g., 'me') to full Graph API endpoint."""
 
@@ -84,8 +90,9 @@ class GraphSession(object):
                           'Authorization' : f'Bearer {token}',
                           'Accept' : 'application/json',
                           'Content-Type' : 'application/json',
+                          'SdkVersion': 'sample-python-graphrest',
+                          'x-client-sku': 'sample-python-graphrest',
                           'client-request-id' : str(uuid.uuid4()),
-                          'SdkVersion': 'sample-python-graphrest-0.1.0',
                           'return-client-request-id' : 'true'}
         if headers:
             merged_headers.update(headers)
@@ -100,7 +107,7 @@ class GraphSession(object):
                                          'redirect_uri': self.config['redirect_uri'],
                                          'scope': ' '.join(self.config['scopes']),
                                          'state': self.authstate,
-                                         'prompt': 'consent'})
+                                         'prompt': 'select_account'})
         self.state['authorization_url'] = self.config['auth_endpoint'] + '?' + params
         bottle.redirect(self.state['authorization_url'], 302)
 
