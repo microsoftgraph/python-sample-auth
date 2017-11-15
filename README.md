@@ -28,7 +28,7 @@ Each ```sample_*.py``` source file has the same structure:
 4. **authorize()** (Redirect URI) &mdash; Use authorization code to request/save token, redirect to /graphcall.
 5. **graphcall()** &mdash; Query Microsoft Graph and display returned data.
 
-You can modify the samples to test specific Microsoft Graph calls you'd like to make by changing the endpoint, and changing the requested permissions to what that endpoint requires. For example, to retrieve your email messages instead of user profile data, change the ```/me``` endpoint to ```/me/messages``` and add ```Mail.Read``` to the permissions requested. With those changes, the sample will display a JSON document that contains the top ten messages from your mailbox.
+You can modify the samples to test specific Microsoft Graph calls you'd like to make by changing the endpoint, and changing the requested permissions to what that endpoint requires. For example, to retrieve your email messages instead of user profile data, change the ```/me``` endpoint to ```/me/messages``` and add ```Mail.Read``` to the list of permissions requested in the SCOPES setting of ```config.py```. With those changes, the sample will display a JSON document that contains the top ten messages from your mailbox.
 
 Note that these samples are intended to clarify the minimum steps required for authenticating and making calls to Microsoft Graph. They don't include error handling and other common practices for production deployment.
 

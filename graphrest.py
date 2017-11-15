@@ -25,13 +25,14 @@ class GraphSession(object):
     def __init__(self, **kwargs):
         """Initialize instance with default values and user-provided overrides.
 
-        These settings must be specified at runtime:
+        The only argument that MUST be specified at runtime is scopes, the list
+        of required scopes for this session.
+
+        These settings have default values imported from config.py, but can
+        be overridden if desired:
         client_id = client ID (application ID) from app registration portal
         client_secret = client secret (password) from app registration portal
         redirect_uri = must match value specified in app registration portal
-        scopes = list of required scopes/permissions
-
-        These settings have default values but can be overridden if desired:
         resource = the base URL for calls to Microsoft Graph
         api_version = Graph version ('v1.0' is default, can also use 'beta')
         authority_url = base URL for authorization authority
@@ -44,9 +45,13 @@ class GraphSession(object):
         refresh_enable = whether to auto-refresh expired tokens
         """
 
-        self.config = {'client_id': '', 'client_secret': '', 'redirect_uri': '',
-                       'scopes': [], 'cache_state': False,
-                       'resource': config.RESOURCE, 'api_version': config.API_VERSION,
+        self.config = {'client_id': config.CLIENT_ID,
+                       'client_secret': config.CLIENT_SECRET,
+                       'redirect_uri': config.REDIRECT_URI,
+                       'scopes': config.SCOPES,
+                       'cache_state': False,
+                       'resource': config.RESOURCE,
+                       'api_version': config.API_VERSION,
                        'authority_url': config.AUTHORITY_URL,
                        'auth_endpoint': config.AUTHORITY_URL + config.AUTH_ENDPOINT,
                        'token_endpoint': config.AUTHORITY_URL + config.TOKEN_ENDPOINT,

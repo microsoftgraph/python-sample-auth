@@ -7,12 +7,7 @@ import bottle
 import graphrest
 import requests
 
-import config
-
-MSGRAPH = graphrest.GraphSession(client_id=config.CLIENT_ID,
-                                 client_secret=config.CLIENT_SECRET,
-                                 redirect_uri=config.REDIRECT_URI,
-                                 scopes=['User.Read'])
+MSGRAPH = graphrest.GraphSession()
 
 bottle.TEMPLATE_PATH = ['./static/templates']
 
@@ -41,7 +36,7 @@ def graphcall():
     endpoint = MSGRAPH.api_endpoint('me')
     graphdata = requests.get(endpoint, headers=MSGRAPH.headers()).json()
     return {'graphdata': graphdata,
-            'endpoint': MSGRAPH.api_endpoint(endpoint),
+            'endpoint': endpoint,
             'sample': 'graphrest'}
 
 @bottle.route('/static/<filepath:path>')

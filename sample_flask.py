@@ -14,7 +14,7 @@ APP.secret_key = 'development'
 OAUTH = OAuth(APP)
 MSGRAPH = OAUTH.remote_app(
     'microsoft', consumer_key=config.CLIENT_ID, consumer_secret=config.CLIENT_SECRET,
-    request_token_params={'scope': 'User.Read'},
+    request_token_params={'scope': config.SCOPES},
     base_url=config.RESOURCE + config.API_VERSION + '/',
     request_token_url=None, access_token_method='POST',
     access_token_url=config.AUTHORITY_URL + config.TOKEN_ENDPOINT,

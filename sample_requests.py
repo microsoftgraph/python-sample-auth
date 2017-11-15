@@ -10,7 +10,7 @@ import requests_oauthlib
 import config
 
 MSGRAPH = requests_oauthlib.OAuth2Session(config.CLIENT_ID,
-                                          scope=['User.Read'],
+                                          scope=config.SCOPES,
                                           redirect_uri=config.REDIRECT_URI)
 
 # Enable non-HTTPS redirect URI for development/testing.
