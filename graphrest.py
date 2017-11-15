@@ -100,7 +100,9 @@ class GraphSession(object):
             url.lstrip('/'))
 
     def get(self, endpoint, headers=None, stream=False):
-        """GET from API (authenticated with access token)."""
+        """GET from API (authenticated with access token).
+        Returns JSON payload and HTTP status code.
+        """
 
         self.token_validation()
 
@@ -109,9 +111,10 @@ class GraphSession(object):
         if headers:
             merged_headers.update(headers)
 
-        return requests.get(self.api_endpoint(endpoint),
-                            headers=merged_headers,
-                            stream=stream)
+        response = requests.get(self.api_endpoint(endpoint),
+                                headers=merged_headers,
+                                stream=stream)
+        return response.json(), response.status_code
 
     def headers(self, headers=None):
         """Returns dictionary of default HTTP headers for calls to Microsoft Graph API,
