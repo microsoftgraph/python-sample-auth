@@ -51,6 +51,13 @@ class GraphSession(object):
                        'auth_endpoint': config.AUTHORITY_URL + config.AUTH_ENDPOINT,
                        'token_endpoint': config.AUTHORITY_URL + config.TOKEN_ENDPOINT,
                        'refresh_enable': True}
+
+        # Print warning if any unknown arguments were passed, since those may be
+        # errors/typos.
+        for key in kwargs:
+            if not key in self.config:
+                print(f'WARNING: unknown "{key}" argument passed to GraphSession')
+
         self.config.update(kwargs.items()) # add passed arguments to config
 
         self.state_manager('init')
