@@ -27,16 +27,17 @@ def login():
     auth_state = str(uuid.uuid4())
     SESSION.auth_state = auth_state
 
-    # Two ways the ADAL samples differ from the other auth samples:
-    # - Use v1.0 endpoint instead of v2.0 AUTH_ENDPOINT setting.
-    # - Specified prompt=select_account parameter to force user
-    #   authentication even if already logged in.
+    # For this sample, the user selects an account to authenticate. Change
+    # this value to 'none' for "silent SSO" behavior, and if the user is
+    # already authenticated they won't need to re-authenticate.
+    prompt_behavior = 'select_account'
+
     params = urllib.parse.urlencode({'response_type': 'code',
                                      'client_id': config.CLIENT_ID,
                                      'redirect_uri': config.REDIRECT_URI,
                                      'state': auth_state,
                                      'resource': config.RESOURCE,
-                                     'prompt': 'select_account'})
+                                     'prompt': prompt_behavior})
 
     return bottle.redirect(config.AUTHORITY_URL + '/oauth2/authorize?' + params)
 
