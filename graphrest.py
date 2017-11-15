@@ -99,8 +99,31 @@ class GraphSession(object):
             f"{self.config['resource']}{self.config['api_version']}/",
             url.lstrip('/'))
 
-    def get(self, endpoint, headers=None, stream=False):
+    def delete(self, endpoint, *, headers=None, data=None, verify=False, params=None):
+        """Wrapper for authenticated HTTP DELETE to API endpoint.
+
+        endpoint = URL (can be partial; for example, 'me/contacts')
+        headers = HTTP header dictionary; will be merged with graphrest's
+                  standard headers, which include access token
+        data = HTTP request body
+        verify = the Requests option for verifying SSL certificate; defaults
+                 to False for demo purposes. For more information see:
+        http://docs.python-requests.org/en/master/user/advanced/#ssl-csert-verification
+        params = query string parameters
+
+        Returns Requests response object.
+        """
+        self.token_validation()
+        return requests.delete(self.api_endpoint(endpoint),
+                               headers=self.headers(headers),
+                               data=data, verify=verify, params=params)
+
+    def get(self, endpoint='me', *, headers=None, stream=False):
         """GET from API (authenticated with access token).
+        endpoint = URL (can be partial; for example, 'me/contacts')
+        headers = HTTP header dictionary; will be merged with graphrest's
+                  standard headers, which include access token
+        stream = Requests streaming option; set to True for image data, etc.
         Returns JSON payload and HTTP status code.
         """
 
@@ -169,6 +192,25 @@ class GraphSession(object):
         self.state_manager('init')
         if redirect_to:
             bottle.redirect(redirect_to)
+
+    def patch(self, endpoint, *, headers=None, data=None, verify=False, params=None):
+        """Wrapper for authenticated HTTP PATCH to API endpoint.
+
+        endpoint = URL (can be partial; for example, 'me/contacts')
+        headers = HTTP header dictionary; will be merged with graphrest's
+                  standard headers, which include access token
+        data = HTTP request body
+        verify = the Requests option for verifying SSL certificate; defaults
+                 to False for demo purposes. For more information see:
+        http://docs.python-requests.org/en/master/user/advanced/#ssl-csert-verification
+        params = query string parameters
+
+        Returns Requests response object.
+        """
+        self.token_validation()
+        return requests.patch(self.api_endpoint(endpoint),
+                              headers=self.http_request_headers(headers),
+                              data=data, verify=verify, params=params)
 
     def post(self, endpoint, headers=None, data=None, verify=False, params=None):
         """POST to API (authenticated with access token).
