@@ -14,6 +14,7 @@ TOKEN_ENDPOINT = '/oauth2/v2.0/token'
 
 RESOURCE = 'https://graph.microsoft.com/'
 API_VERSION = 'v1.0'
+SCOPES = ['User.Read'] # add other scopes/permissions as needed
 
 # This code can be removed after configuring CLIENT_ID and CLIENT_SECRET above.
 if ' ' in CLIENT_ID or ' ' in CLIENT_SECRET:
