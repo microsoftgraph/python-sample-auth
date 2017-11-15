@@ -5,7 +5,6 @@ import os
 
 import bottle
 import graphrest
-import requests
 
 MSGRAPH = graphrest.GraphSession()
 
@@ -32,12 +31,9 @@ def authorized():
 @bottle.view('graphcall.html')
 def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
-    MSGRAPH.token_validation() # Optional - assures token is valid for >5 seconds.
     endpoint = MSGRAPH.api_endpoint('me')
-    graphdata = requests.get(endpoint, headers=MSGRAPH.headers()).json()
-    return {'graphdata': graphdata,
-            'endpoint': endpoint,
-            'sample': 'graphrest'}
+    graphdata = MSGRAPH.get(endpoint).json()
+    return {'graphdata': graphdata, 'endpoint': endpoint, 'sample': 'graphrest'}
 
 @bottle.route('/static/<filepath:path>')
 def server_static(filepath):

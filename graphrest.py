@@ -99,6 +99,20 @@ class GraphSession(object):
             f"{self.config['resource']}{self.config['api_version']}/",
             url.lstrip('/'))
 
+    def get(self, endpoint, headers=None, stream=False):
+        """GET from API (authenticated with access token)."""
+
+        self.token_validation()
+
+        # merge passed headers with default headers
+        merged_headers = self.headers()
+        if headers:
+            merged_headers.update(headers)
+
+        return requests.get(self.api_endpoint(endpoint),
+                            headers=merged_headers,
+                            stream=stream)
+
     def headers(self, headers=None):
         """Returns dictionary of default HTTP headers for calls to Microsoft Graph API,
         including access token and a unique client-request-id.
@@ -152,6 +166,26 @@ class GraphSession(object):
         self.state_manager('init')
         if redirect_to:
             bottle.redirect(redirect_to)
+
+    def post(self, endpoint, headers=None, data=None, verify=False, params=None):
+        """POST to API (authenticated with access token).
+
+        headers = custom HTTP headers (merged with defaults, including access token)
+
+        verify = the Requests option for verifying SSL certificate; defaults
+                 to False for demo purposes. For more information see:
+        http://docs.python-requests.org/en/master/user/advanced/#ssl-cert-verification
+        """
+
+        self.token_validation()
+
+        merged_headers = self.headers()
+        if headers:
+            merged_headers.update(headers)
+
+        return requests.post(self.api_endpoint(endpoint),
+                             headers=merged_headers, data=data,
+                             verify=verify, params=params)
 
     def redirect_uri_handler(self):
         """Redirect URL handler for AuthCode workflow. Uses the authorization
