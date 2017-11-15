@@ -45,7 +45,7 @@ def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
     endpoint = 'me'
     headers = {'SdkVersion': 'sample-python-flask',
-               'x-client-sku': 'sample-python-flask',
+               'x-client-SKU': 'sample-python-flask',
                'client-request-id': str(uuid.uuid4()),
                'return-client-request-id': 'true'}
     graphdata = MSGRAPH.get(endpoint, headers=headers).data

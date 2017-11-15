@@ -55,7 +55,6 @@ def authorized():
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
                             'SdkVersion': 'sample-python-adal',
-                            'x-client-sku': 'sample-Python',
                             'return-client-request-id': 'true'})
     return bottle.redirect('/graphcall')
 

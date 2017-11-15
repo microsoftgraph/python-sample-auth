@@ -58,7 +58,6 @@ def authorized():
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
                             'SdkVersion': 'sample-python-adal',
-                            'x-client-sku': 'Python',
                             'return-client-request-id': 'true'})
     return flask.redirect('/graphcall')
 

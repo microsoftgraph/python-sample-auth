@@ -108,7 +108,7 @@ class GraphSession(object):
                           'Accept' : 'application/json',
                           'Content-Type' : 'application/json',
                           'SdkVersion': 'sample-python-graphrest',
-                          'x-client-sku': 'sample-python-graphrest',
+                          'x-client-SKU': 'sample-python-graphrest',
                           'client-request-id' : str(uuid.uuid4()),
                           'return-client-request-id' : 'true'}
         if headers:

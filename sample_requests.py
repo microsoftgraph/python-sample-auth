@@ -52,7 +52,7 @@ def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
     endpoint = config.RESOURCE + config.API_VERSION + '/me'
     headers = {'SdkVersion': 'sample-python-requests-0.1.0',
-               'x-client-sku': 'sample-python-requests',
+               'x-client-SKU': 'sample-python-requests',
                'SdkVersion': 'sample-python-requests',
                'client-request-id': str(uuid.uuid4()),
                'return-client-request-id': 'true'}
