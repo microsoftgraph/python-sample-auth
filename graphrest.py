@@ -118,13 +118,19 @@ class GraphSession(object):
                                headers=self.headers(headers),
                                data=data, verify=verify, params=params)
 
-    def get(self, endpoint='me', *, headers=None, stream=False):
-        """GET from API (authenticated with access token).
+    def get(self, endpoint='me', *, headers=None, stream=False, verify=False, params=None):
+        """Wrapper for authenticated HTTP GET to API endpoint.
+
         endpoint = URL (can be partial; for example, 'me/contacts')
         headers = HTTP header dictionary; will be merged with graphrest's
                   standard headers, which include access token
         stream = Requests streaming option; set to True for image data, etc.
-        Returns JSON payload and HTTP status code.
+        verify = the Requests option for verifying SSL certificate; defaults
+                 to False for demo purposes. For more information see:
+        http://docs.python-requests.org/en/master/user/advanced/#ssl-csert-verification
+        params = query string parameters
+
+        Returns Requests response object.
         """
 
         self.token_validation()
@@ -134,10 +140,9 @@ class GraphSession(object):
         if headers:
             merged_headers.update(headers)
 
-        response = requests.get(self.api_endpoint(endpoint),
-                                headers=merged_headers,
-                                stream=stream)
-        return response.json(), response.status_code
+        return requests.get(self.api_endpoint(endpoint),
+                            headers=merged_headers,
+                            stream=stream, verify=verify, params=params)
 
     def headers(self, headers=None):
         """Returns dictionary of default HTTP headers for calls to Microsoft Graph API,
@@ -231,6 +236,25 @@ class GraphSession(object):
         return requests.post(self.api_endpoint(endpoint),
                              headers=merged_headers, data=data,
                              verify=verify, params=params)
+
+    def put(self, endpoint, *, headers=None, data=None, verify=False, params=None):
+        """Wrapper for authenticated HTTP PUT to API endpoint.
+
+        endpoint = URL (can be partial; for example, 'me/contacts')
+        headers = HTTP header dictionary; will be merged with graphrest's
+                  standard headers, which include access token
+        data = HTTP request body
+        verify = the Requests option for verifying SSL certificate; defaults
+                 to False for demo purposes. For more information see:
+        http://docs.python-requests.org/en/master/user/advanced/#ssl-csert-verification
+        params = query string parameters
+
+        Returns Requests response object.
+        """
+        self.token_validation()
+        return requests.put(self.api_endpoint(endpoint),
+                            headers=self.headers(headers),
+                            data=data, verify=verify, params=params)
 
     def redirect_uri_handler(self):
         """Redirect URL handler for AuthCode workflow. Uses the authorization
