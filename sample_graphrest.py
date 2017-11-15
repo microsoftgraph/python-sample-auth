@@ -26,12 +26,12 @@ def homepage():
 @bottle.route('/login')
 def login():
     """Prompt user to authenticate."""
-    MSGRAPH.login()
+    MSGRAPH.login('/graphcall')
 
 @bottle.route('/login/authorized')
 def authorized():
     """Handler for the application's Redirect Uri."""
-    MSGRAPH.redirect_uri_handler(redirect_to='/graphcall')
+    MSGRAPH.redirect_uri_handler()
 
 @bottle.route('/graphcall')
 @bottle.view('graphcall.html')
