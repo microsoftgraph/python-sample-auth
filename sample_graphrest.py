@@ -32,8 +32,7 @@ def authorized():
 def graphcall():
     """Confirm user authentication by calling Graph and displaying some data."""
     endpoint = MSGRAPH.api_endpoint('me')
-    graphdata, status_code = MSGRAPH.get(endpoint)
-    # for a production app, check status_code and handle errors
+    graphdata = MSGRAPH.get(endpoint).json()
     return {'graphdata': graphdata, 'endpoint': endpoint, 'sample': 'graphrest'}
 
 @bottle.route('/static/<filepath:path>')
