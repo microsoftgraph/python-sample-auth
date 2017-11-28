@@ -1,4 +1,4 @@
-"""config.py
+"""
 This file contains configuration settings for running the Python auth samples
 locally. In a production deployment, this information should be saved in a
 database or other secure storage mechanism.
