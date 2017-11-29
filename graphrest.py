@@ -1,4 +1,4 @@
-"""sample Microsoft Graph authentication library"""
+"""Sample Microsoft Graph authentication library."""
 # Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
 # See LICENSE in the project root for license information.
 import json
@@ -13,13 +13,16 @@ import bottle
 
 import config
 
-# disable warnings to allow use of non-HTTPS for local dev/test
+
+# Disable warnings to allow use of non-HTTPS for local dev/test.
 urllib3.disable_warnings()
 
 class GraphSession(object):
-    """Microsoft Graph connection class. Implements OAuth 2.0 Authorization Code
-    Grant workflow, handles configuration and state management, adding tokens
-    for authenticated calls to Graph, related details.
+    """Microsoft Graph connection class.
+
+    Implements OAuth 2.0 Authorization Code Grant workflow, handles
+    configuration and state management, adding tokens for authenticated calls to
+    Graph, related details.
     """
 
     def __init__(self, **kwargs):
@@ -60,7 +63,7 @@ class GraphSession(object):
         # Print warning if any unknown arguments were passed, since those may be
         # errors/typos.
         for key in kwargs:
-            if not key in self.config:
+            if key not in self.config:
                 print(f'WARNING: unknown "{key}" argument passed to GraphSession')
 
         self.config.update(kwargs.items()) # add passed arguments to config
@@ -80,8 +83,7 @@ class GraphSession(object):
         if self.config['refresh_enable']:
             if refresh_scope not in self.config['scopes']:
                 self.config['scopes'].append(refresh_scope)
-        else:
-            if refresh_scope in self.config['scopes']:
+        elif refresh_scope in self.config['scopes']:
                 self.config['scopes'].remove(refresh_scope)
 
     def __repr__(self):
@@ -92,14 +94,14 @@ class GraphSession(object):
 
     def api_endpoint(self, url):
         """Convert relative endpoint (e.g., 'me') to full Graph API endpoint."""
-
         if urllib.parse.urlparse(url).scheme in ['http', 'https']:
             return url
         return urllib.parse.urljoin(
             f"{self.config['resource']}{self.config['api_version']}/",
             url.lstrip('/'))
 
-    def delete(self, endpoint, *, headers=None, data=None, verify=False, params=None):
+    def delete(self, endpoint, *, headers=None, data=None, verify=False,
+               params=None):
         """Wrapper for authenticated HTTP DELETE to API endpoint.
 
         endpoint = URL (can be partial; for example, 'me/contacts')
@@ -132,10 +134,8 @@ class GraphSession(object):
 
         Returns Requests response object.
         """
-
         self.token_validation()
-
-        # merge passed headers with default headers
+        # Merge passed headers with default headers.
         merged_headers = self.headers()
         if headers:
             merged_headers.update(headers)
@@ -145,7 +145,7 @@ class GraphSession(object):
                             stream=stream, verify=verify, params=params)
 
     def headers(self, headers=None):
-        """Returns dictionary of default HTTP headers for calls to Microsoft Graph API,
+        """Return a dict of default HTTP headers for calls to Microsoft Graph API,
         including access token and a unique client-request-id.
 
         Keyword arguments:
@@ -172,25 +172,29 @@ class GraphSession(object):
         """
         if login_redirect:
             self.login_redirect = login_redirect
-
-        # if caching is enabled, attempt silent SSO first
+        # If caching is enabled, attempt silent SSO first.
         if self.config['cache_state']:
             if self.silent_sso():
                 return bottle.redirect(self.login_redirect)
 
         self.authstate = str(uuid.uuid4())
-        params = urllib.parse.urlencode({'response_type': 'code',
-                                         'client_id': self.config['client_id'],
-                                         'redirect_uri': self.config['redirect_uri'],
-                                         'scope': ' '.join(self.config['scopes']),
-                                         'state': self.authstate,
-                                         'prompt': 'select_account'})
-        self.state['authorization_url'] = self.config['auth_endpoint'] + '?' + params
+        data = {
+            'response_type': 'code',
+            'client_id': self.config['client_id'],
+            'redirect_uri': self.config['redirect_uri'],
+            'scope': ' '.join(self.config['scopes']),
+            'state': self.authstate,
+            'prompt': 'select_account',
+        }
+        params = urllib.parse.urlencode(data)
+        url = f"{self.config['auth_endpoint']}?{params}"
+        self.state['authorization_url'] = url
         bottle.redirect(self.state['authorization_url'], 302)
 
     def logout(self, redirect_to=None):
         """Clear current Graph connection state and redirect to specified route.
-        If redirect_to == None, no redirection will take place and just clears
+
+        If redirect_to is false, no redirection will take place and just clears
         the current logged-in status.
         """
 
@@ -226,9 +230,7 @@ class GraphSession(object):
                  to False for demo purposes. For more information see:
         http://docs.python-requests.org/en/master/user/advanced/#ssl-cert-verification
         """
-
         self.token_validation()
-
         merged_headers = self.headers()
         if headers:
             merged_headers.update(headers)
@@ -261,20 +263,21 @@ class GraphSession(object):
         code received from auth endpoint to call the token endpoint and obtain
         an access token.
         """
-
         # Verify that this authorization attempt came from this app, by checking
         # the received state against what we sent with our authorization request.
         if self.authstate != bottle.request.query.state:
-            raise Exception(f"STATE MISMATCH: {self.authstate} sent,"
-                            f"{bottle.request.query.state} received")
+            raise ValueError(f"STATE MISMATCH: {self.authstate} sent, "
+                             f"{bottle.request.query.state} received")
         self.authstate = '' # clear state to prevent re-use
-
+        data = {
+            'client_id': self.config['client_id'],
+            'client_secret': self.config['client_secret'],
+            'grant_type': 'authorization_code',
+            'code': bottle.request.query.code,
+            'redirect_uri': self.config['redirect_uri']
+        }
         token_response = requests.post(self.config['token_endpoint'],
-                                       data={'client_id': self.config['client_id'],
-                                             'client_secret': self.config['client_secret'],
-                                             'grant_type': 'authorization_code',
-                                             'code': bottle.request.query.code,
-                                             'redirect_uri': self.config['redirect_uri']})
+                                       data=data)
         self.token_save(token_response)
 
         if token_response and token_response.ok:
@@ -289,12 +292,10 @@ class GraphSession(object):
         """
         if self.token_seconds() > 0:
             return True # current token is vald
-
-        if self.state['refresh_token']:
+        elif self.state['refresh_token']:
             # we have a refresh token, so use it to refresh the access token
             self.token_refresh()
             return True
-
         return False # can't do silent SSO at this time
 
     def state_manager(self, action):
@@ -304,7 +305,6 @@ class GraphSession(object):
         'init' -- initialize state (set properties to defaults)
         'save' -- save current state (if self.config['cache_state'])
         """
-
         initialized_state = {'access_token': None, 'refresh_token': None,
                              'token_expires_at': 0, 'authorization_url': '',
                              'token_scope': '', 'loggedin': False}
@@ -325,12 +325,14 @@ class GraphSession(object):
 
     def token_refresh(self):
         """Refresh the current access token."""
+        data = {
+            'client_id': self.config['client_id'],
+            'client_secret': self.config['client_secret'],
+            'grant_type': 'refresh_token',
+            'refresh_token': self.state['refresh_token'],
+        }
         response = requests.post(self.config['token_endpoint'],
-                                 data={'client_id': self.config['client_id'],
-                                       'client_secret': self.config['client_secret'],
-                                       'grant_type': 'refresh_token',
-                                       'refresh_token': self.state['refresh_token']},
-                                 verify=False)
+                                 data=data, verify=False)
         self.token_save(response)
 
     def token_save(self, response):
@@ -343,19 +345,18 @@ class GraphSession(object):
         Returns True if the token was successfully saved, False if not.
         To manually inspect the contents of a JWT, see http://jwt.ms/.
         """
-
-        jsondata = response.json()
-        if not 'access_token' in jsondata:
+        json_data = response.json()
+        if 'access_token' not in json_data:
             self.logout()
             return False
 
-        self.verify_scopes(jsondata['scope'])
-        self.state['access_token'] = jsondata['access_token']
+        self.verify_scopes(json_data['scope'])
+        self.state['access_token'] = json_data['access_token']
         self.state['loggedin'] = True
 
         # token_expires_at = time.time() value (seconds) at which it expires
-        self.state['token_expires_at'] = time.time() + int(jsondata['expires_in'])
-        self.state['refresh_token'] = jsondata.get('refresh_token', None)
+        self.state['token_expires_at'] = time.time() + int(json_data['expires_in'])
+        self.state['refresh_token'] = json_data.get('refresh_token')
         return True
 
     def token_seconds(self):
@@ -376,9 +377,7 @@ class GraphSession(object):
 
     def verify_scopes(self, token_scopes):
         """Verify that the list of scopes returned with an access token match
-        the scopes that we requested.
-        """
-
+        the scopes that we requested."""
         self.state['token_scope'] = token_scopes
         scopes_returned = frozenset({_.lower() for _ in token_scopes.split(' ')})
         scopes_expected = frozenset({_.lower() for _ in self.config['scopes']
