@@ -14,7 +14,6 @@ bottle.TEMPLATE_PATH = ['./static/templates']
 @bottle.view('homepage.html')
 def homepage():
     """Render the home page."""
-
     return {'sample': 'graphrest'}
 
 @bottle.route('/login')
