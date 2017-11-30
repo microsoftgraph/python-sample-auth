@@ -56,7 +56,7 @@ If you're interested in developing your own authentication module, or are curiou
 
 ## Running the samples
 
-To install and configure the samples in this repo, see the instructions in [Installing the Python REST samples](blob/master/installation.md). These samples only require **User.Read** permission, which is the default, so you don't need to specify additional permissions while registering the application.
+To install and configure the samples in this repo, see the instructions in [Installing the Python REST samples](https://github.com/microsoftgraph/python-sample-auth/blob/master/installation.md). These samples only require **User.Read** permission, which is the default, so you don't need to specify additional permissions while registering the application.
 
 After you've completed those steps, follow these steps to run the samples:
 
