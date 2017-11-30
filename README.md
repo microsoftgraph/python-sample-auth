@@ -8,7 +8,7 @@ This repo includes examples of four different approaches you can use to authenti
 
 * [Sample architecture](#sample-architecture)
 * [Python auth options](#python-auth-options)
-* [Using the samples](#using-the-samples)
+* [Running the samples](#running-the-samples)
 * [Contributing](#contributing)
 * [Resources](#resources)
 
@@ -54,26 +54,25 @@ If you're using [Requests](http://docs.python-requests.org/en/master/), the most
 
 If you're interested in developing your own authentication module, or are curious about the details of implementing OAuth 2.0 authentication for a web application, the [sample_graphrest.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/sample_graphrest.py) sample provides an example of authenticating with [graphrest](https://github.com/microsoftgraph/python-sample-auth/blob/master/graphrest.py), a custom auth library written in Python. Note that this sample uses the [Bottle](https://bottlepy.org/docs/dev/) web framework, although it is relatively easy to port it to Flask or any other web framework that supports redirects and provides access to request query parameters.
 
-## Using the samples
+## Running the samples
 
-The following instructions take you through the steps required to install, configure, and run the samples.
+To install and configure the samples in this repo, see the instructions in [Installing the Python REST samples](blob/master/installation.md). These samples only require **User.Read** permission, which is the default, so you don't need to specify additional permissions while registering the application.
 
-### Prerequisites
+After you've completed those steps, follow these steps to run the samples:
 
-Before installing the sample:
+1. To start a sample, run the command ```python <progname>``` in the root folder of the cloned repo. For example, to run the ADAL sample, use this command: ```python sample_adal.py```.
 
-* Install Python from [https://www.python.org/](https://www.python.org/). We've tested the code with Python 3.6.2, but any Python 3.x version should work fine. If your code base is running under Python 2.7, you may find it helpful to use the [3to2](https://pypi.python.org/pypi/3to2) tools to port the code to Python 2.7.
-* To register your application for access to Microsoft Graph, you'll need either a [Microsoft account](https://www.outlook.com) or an [Office 365 for business account](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). If you don't have one of these, you can create a Microsoft account for free at [outlook.com](https://www.outlook.com).
+2. Go to this URL in a browser: [http://localhost:5000](http://localhost:5000). You should see a home page like this:
 
-### Installation
+![home page](static/images/homepage.png)
 
-Follow these steps to install the samples:
+3. Choose **Connect**, and then select your Microsoft account or Office 365 account and follow the instructions to log on. The first time you log on to the app under a particular identity, you will be prompted to consent to the permissions that the app is requesting. Choose **Accept**, which gives the application permission to read your profile information. You'll then see the following screen, which shows that the app has successfully authenticated and is able to read your profile information from Microsoft Graph:
 
-1. Clone this repo: ```git clone https://github.com/microsoftgraph/python-sample-auth.git```.
-2. Create and activate a virtual environment (optional). If you're new to Python virtual environments, [Miniconda](https://conda.io/miniconda.html) is a great place to start.
-3. In the root folder of your cloned repo, install the dependencies for the sample as listed in [requirements.txt](https://github.com/microsoftgraph/python-sample-auth/blob/master/requirements.txt) with this command: ```pip install -r requirements.txt```.
+![sample output](static/images/graphcall.png)
 
-Following the above steps will install all the dependencies for all four options. If you only plan to use one of the options, the following table lists the Python package dependencies for each sample.
+### Python package dependencies
+
+The requirements.txt file for this repo includes all of the packages for all of the auth samples. If you only plan to use one of the samples, you may prefer to only install the packages required for that sample. The following table lists the Python package dependencies for each sample.
 
 | Sample | Auth Library | Dependencies |
 | ------ | ------------ | ------------ |
@@ -81,46 +80,6 @@ Following the above steps will install all the dependencies for all four options
 | [sample_flask.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/sample_flask.py) | [Flask-OAuthlib](https://flask-oauthlib.readthedocs.io/en/latest/) | <ul><li>flask</li><li>flask-oauthlib</li></ul> |
 | [sample_requests.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/sample_requests.py) | [Requests-OAuthlib](https://github.com/requests/requests-oauthlib) | <ul><li>requests</li><li>requests-oauthlib</li><li>bottle</li></ul> |
 | [sample_graphrest.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/sample_graphrest.py) | [graphrest module](https://github.com/microsoftgraph/python-sample-auth/blob/master/graphrest.py) | <ul><li>requests</li><li>bottle</li></ul> |
-
-### Configuration
-
-To configure the samples, you'll need to register a new application in the Microsoft [Application Registration Portal](https://apps.dev.microsoft.com/). You only need to do this once, and then any Microsoft identity can be used to run any of the samples.
-
-Follow these steps to register a new application:
-
-1. Sign in to the [Application Registration Portal](https://apps.dev.microsoft.com/) using either your personal or work or school account.
-
-2. Under **My applications**, choose **Add an app**. If you're using an Office 365 account and see two categories listed (Converged or Azure AD only), choose **Add an app** for the Converged applications section.
-
-3. Enter an application name, and choose **Create**. (Do *not* choose **Guided Setup**.)
-
-4. Next you'll see the registration page for your app. Copy and save the **Application Id** field.You will need it later to complete the configuration process.
-
-5. Under **Application Secrets**, choose **Generate New Password**. A new password will be displayed in the **New password generated** dialog. Copy this password. You will need it later to complete the configuration process.
-
-6. Under **Platforms**, choose **Add platform** > **Web**.
-
-7. Enter `http://localhost:5000/login/authorized` as the Redirect URL, and then choose **Save**.
-
-As the final step in configuring the sample, modify the [config.py](https://github.com/microsoftgraph/python-sample-auth/blob/master/config.py) file in the root folder of your cloned repo, and follow the instructions to enter your Client ID and Client Secret (which are referred to as Application Id and Password in the app registration portal). Then save the change, and you're ready to run the samples.
-
-### Running the samples
-
-To run one of the samples, run the command ```python <progname>``` in the root folder of the cloned repo. For example, to run the ADAL sample, use this command: ```python sample_adal.py```.
-
-Then go to this URL in a browser: [http://localhost:5000](http://localhost:5000)
-
-You should see a home page like this:
-
-![home page](static/images/homepage.png)
-
-Choose **Connect**, and then select your Microsoft account or Office 365 account and follow the instructions to log on.
-
-The first time you log on to the app under a particular identity, you will be prompted to consent to the permissions that the app is requesting. Choose **Accept**, which gives the application permission to read your profile information.
-
-You'll then see the following screen, which shows that the app has successfully read your profile information from Microsoft Graph:
-
-![sample output](static/images/graphcall.png)
 
 ## Contributing
 
