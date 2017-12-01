@@ -4,6 +4,7 @@ This page covers how to install Python REST samples for Microsoft Graph. These i
 
 * [Python authentication samples for Microsoft Graph](https://github.com/microsoftgraph/python-sample-auth)
 * [Working with paginated Microsoft Graph responses in Python](https://github.com/microsoftgraph/python-sample-pagination)
+* [Sending mail via Microsoft Graph from Python](https://github.com/microsoftgraph/python-sample-send-mail)
 
 ## Prerequisites
 
