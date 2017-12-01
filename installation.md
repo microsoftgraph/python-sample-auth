@@ -18,10 +18,9 @@ Before installing the sample:
 Follow these steps to install the samples:
 
 1. Clone the repo, using one of these commands:
-
-    ```git clone https://github.com/microsoftgraph/python-sample-auth.git```
-    ```git clone https://github.com/microsoftgraph/python-sample-pagination.git```
-    ```git clone https://github.com/microsoftgraph/python-send-mail.git```
+    * ```git clone https://github.com/microsoftgraph/python-sample-auth.git```
+    * ```git clone https://github.com/microsoftgraph/python-sample-pagination.git```
+    * ```git clone https://github.com/microsoftgraph/python-send-mail.git```
 
 2. Create and activate a virtual environment (optional). If you're new to Python virtual environments, [Miniconda](https://conda.io/miniconda.html) is a great place to start.
 3. In the root folder of your cloned repo, install the dependencies for the sample as listed in the ```requirements.txt``` file with this command: ```pip install -r requirements.txt```.
