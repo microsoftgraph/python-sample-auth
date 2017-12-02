@@ -218,7 +218,7 @@ class GraphSession(object):
         """
         self.token_validation()
         return requests.patch(self.api_endpoint(endpoint),
-                              headers=self.http_request_headers(headers),
+                              headers=self.headers(headers),
                               data=data, verify=verify, params=params)
 
     def post(self, endpoint, headers=None, data=None, verify=False, params=None):
