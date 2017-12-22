@@ -92,7 +92,7 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 Documentation:
 * [Microsoft Graph Dev Center](https://developer.microsoft.com/en-us/graph/)
 * [Get started with Microsoft Graph and REST](https://developer.microsoft.com/en-us/graph/docs/concepts/rest)
-* [Get access tokens to call Microsoft Graph](https://developer.microsoft.com/en-us/graph/docs/concepts/sample_overview)
+* [Get access tokens to call Microsoft Graph](https://developer.microsoft.com/en-us/graph/docs/concepts/auth_overview)
 * [Authorize access to web applications using OAuth 2.0 and Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-oauth-code)
 
 Samples:
