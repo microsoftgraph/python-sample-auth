@@ -3,8 +3,9 @@
 This page covers how to install Python REST samples for Microsoft Graph. These instructions apply to the samples in these repos:
 
 * [Python authentication samples for Microsoft Graph](https://github.com/microsoftgraph/python-sample-auth)
-* [Working with paginated Microsoft Graph responses in Python](https://github.com/microsoftgraph/python-sample-pagination)
 * [Sending mail via Microsoft Graph from Python](https://github.com/microsoftgraph/python-sample-send-mail)
+* [Working with paginated Microsoft Graph responses in Python](https://github.com/microsoftgraph/python-sample-pagination)
+* [Working with Graph open extensions in Python](https://github.com/microsoftgraph/python-sample-open-extensions)
 
 ## Prerequisites
 
@@ -20,8 +21,8 @@ Follow these steps to install the samples:
 1. Clone the repo, using one of these commands:
     * ```git clone https://github.com/microsoftgraph/python-sample-auth.git```
     * ```git clone https://github.com/microsoftgraph/python-sample-pagination.git```
-    * ```git clone https://github.com/microsoftgraph/python-send-mail.git```
-    * ```git clone https://github.com/microsoftgraph/python-open-extensions.git```
+    * ```git clone https://github.com/microsoftgraph/python-sample-send-mail.git```
+    * ```git clone https://github.com/microsoftgraph/python-sample-open-extensions.git```
 
 2. Create and activate a virtual environment (optional). If you're new to Python virtual environments, [Miniconda](https://conda.io/miniconda.html) is a great place to start.
 3. In the root folder of your cloned repo, install the dependencies for the sample as listed in the ```requirements.txt``` file with this command: ```pip install -r requirements.txt```.
