@@ -100,6 +100,7 @@ Samples:
 * [Sending mail via Microsoft Graph from Python](https://github.com/microsoftgraph/python-sample-send-mail)
 * [Working with paginated Microsoft Graph responses in Python](https://github.com/microsoftgraph/python-sample-pagination)
 * [Working with Graph open extensions in Python](https://github.com/microsoftgraph/python-sample-open-extensions)
+* [Python console application for Microsoft Graph](https://github.com/microsoftgraph/python-sample-console-app)
 
 Auth libraries:
 * [Microsoft ADAL for Python](https://github.com/AzureAD/azure-activedirectory-library-for-python)
