@@ -1,15 +1,10 @@
-# Installing the Python REST samples
+# Configuring the Python authentication samples
 
-This page covers how to install Python REST samples for Microsoft Graph. These instructions apply to the samples in these repos:
-
-* [Python authentication samples for Microsoft Graph](https://github.com/microsoftgraph/python-sample-auth)
-* [Sending mail via Microsoft Graph from Python](https://github.com/microsoftgraph/python-sample-send-mail)
-* [Working with paginated Microsoft Graph responses in Python](https://github.com/microsoftgraph/python-sample-pagination)
-* [Working with Graph open extensions in Python](https://github.com/microsoftgraph/python-sample-open-extensions)
+This page covers how to set up Python authentication samples for Microsoft Graph. These instructions apply to the samples in these repos:
 
 ## Prerequisites
 
-Before installing the sample:
+Before installing the samples:
 
 * Install Python from [https://www.python.org/](https://www.python.org/). We've tested the code with Python 3.6, but any Python 3.x version should work. If your code base is running under Python 2.7, you may find it helpful to use the [3to2](https://pypi.python.org/pypi/3to2) tools to port the code to Python 2.7.
 * To register your application for access to Microsoft Graph, you'll need either a [Microsoft account](https://www.outlook.com) or an [Office 365 for business account](https://msdn.microsoft.com/en-us/office/office365/howto/setup-development-environment#bk_Office365Account). If you don't have one of these, you can create a Microsoft account for free at [outlook.com](https://www.outlook.com).
@@ -18,42 +13,41 @@ Before installing the sample:
 
 Follow these steps to install the samples:
 
-1. Clone the repo, using one of these commands:
+1. Clone the repo, using this command:
     * ```git clone https://github.com/microsoftgraph/python-sample-auth.git```
-    * ```git clone https://github.com/microsoftgraph/python-sample-pagination.git```
-    * ```git clone https://github.com/microsoftgraph/python-sample-send-mail.git```
-    * ```git clone https://github.com/microsoftgraph/python-sample-open-extensions.git```
-
 2. Create and activate a virtual environment (optional). If you're new to Python virtual environments, [Miniconda](https://conda.io/miniconda.html) is a great place to start.
 3. In the root folder of your cloned repo, install the dependencies for the sample as listed in the ```requirements.txt``` file with this command: ```pip install -r requirements.txt```.
 
 ## Configuration
 
-To configure the samples, you'll need to register a new application in the Microsoft [Application Registration Portal](https://apps.dev.microsoft.com/).
+To configure the samples, you'll need to register a new application in the Azure portal [app registrations page](https://go.microsoft.com/fwlink/?linkid=2083908).
 
 Follow these steps to register a new application:
 
-1. Sign in to the [Application Registration Portal](https://apps.dev.microsoft.com/) using either your personal or work or school account.
+1. Sign in to the Azure portal [app registrations page](https://go.microsoft.com/fwlink/?linkid=2083908) using either your personal or work or school account.
 
-2. Under **My applications**, choose **Add an app**. If you're using an Office 365 account and see two categories listed (Converged or Azure AD only), choose **Add an app** for the Converged applications section.
+2. Choose **New registration** near the top of the page.
 
-3. Enter an application name, and choose **Create**. (Do *not* choose **Guided Setup**.)
+3. When the **Register an application** page appears, enter your application's registration information:
+    * In the **Name** section, enter a meaningful application name that will be displayed to users of the app.
+    * Change **Supported account types** to **Accounts in any organizational directory and personal Microsoft accounts (e.g. Skype, Xbox, Outlook.com)**.
+    * Enter `http://localhost:5000/login/authorized` as the **Redirect URI**. The URI type should be **Web**.
 
-4. Next you'll see the registration page for your app. Copy and save the **Application Id** field.You will need it later to complete the configuration process.
+4. Select **Register** to create the application.
 
-5. Under **Application Secrets**, choose **Generate New Password**. A new password will be displayed in the **New password generated** dialog. Copy this password. You will need it later to complete the configuration process.
+5. The application's **Overview** page will display. On this page, find the **Application (client) ID** value and record it for later. You'll need it to configure the project.
 
-6. Under **Platforms**, choose **Add platform** > **Web**.
+6. Select **Certificates & secrets** under **Manage**.
+    1. Select the **New client secret** button.
+    2. Enter a value in **Description**.
+    3. Select any option for **Expires**.
+    4. When you click the **Add** button, the key value will be displayed. Copy the key value and save it in a safe location. You'll need it in the next step.
 
-7. Under **Delegated Permissions**, add the permissions/scopes required for the sample, as covered in the sample's README. For example, the [send mail](https://github.com/microsoftgraph/python-sample-send-mail) sample requires **Mail.Read** permission. Some samples (such as the [auth samples](https://github.com/microsoftgraph/python-sample-auth)) only require the default **User.Read** permission, which is pre-selected for a new application registration, so for those you won't need to add any permissions.
+7. This sample only require the default **User.Read** permission, which is pre-selected for a new application registration, you won't need to add any additional permissions.
 
-8. Enter `http://localhost:5000/login/authorized` as the Redirect URL, and then choose **Save**.
-
-As the final step in configuring the sample, modify the ```config.py``` file in the root folder of your cloned repo, and follow the instructions to enter your Client ID and Client Secret (which are referred to as Application Id and Password in the app registration portal). Then save the change, and you're ready to run the samples as covered in each sample's README.
+As the final step in configuring the sample, modify the ```config.py``` file in the root folder of your cloned repo, and follow the instructions to enter your Client ID (Application ID) and Client Secret. Then save the change, and you're ready to run the sample.
 
 ## Working with multiple samples
-
-If you're installing multiple Python REST samples, you can re-use the application registration and ```config.py``` file in most cases.
 
 Samples that use Microsoft ADAL for authentication require that all required permissions/scopes are added to the application in the Application Registration Portal. So if you're using ADAL for multiple samples, you can either register a separate app for each sample, or add all required permissions to a single registered application.
 
