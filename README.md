@@ -1,6 +1,6 @@
 # Python authentication samples for Microsoft Graph
 
-![language:Python](https://img.shields.io/badge/Language-Python-blue.svg?style=flat-square) ![license:MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square) 
+![language:Python](https://img.shields.io/badge/Language-Python-blue.svg?style=flat-square) ![license:MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)
 
 To make calls to [Microsoft Graph](https://developer.microsoft.com/en-us/graph/), your app must obtain a valid access token from Azure Active Directory (Azure AD), the Microsoft cloud identity service, and the token must be passed in an HTTP header with each call to the Microsoft Graph REST API. You can acquire access tokens via industry-standard [OAuth 2.0](https://tools.ietf.org/html/rfc6749) and [Open ID Connect](http://openid.net/connect/) protocols, and use an [Azure Active Directory v2.0 authentication library](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-libraries) to implement those protocols.
 
@@ -56,7 +56,7 @@ If you're interested in developing your own authentication module, or are curiou
 
 ## Running the samples
 
-To install and configure the samples in this repo, see the instructions in [Installing the Python REST samples](https://github.com/microsoftgraph/python-sample-auth/blob/master/installation.md). These samples only require **User.Read** permission, which is the default, so you don't need to specify additional permissions while registering the application.
+To install and configure the samples in this repo, see the instructions in [Installing the Python authentication samples](https://github.com/microsoftgraph/python-sample-auth/blob/master/installation.md). These samples only require the **User.Read** permission, which is the default, so you don't need to specify additional permissions while registering the application.
 
 After you've completed those steps, follow these steps to run the samples:
 
@@ -64,7 +64,7 @@ After you've completed those steps, follow these steps to run the samples:
 
 2. Go to this URL in a browser: [http://localhost:5000](http://localhost:5000). You should see a home page like this:
 
-![home page](static/images/homepage.png)
+    ![home page](static/images/homepage.png)
 
 3. Choose **Connect**, and then select your Microsoft account or Office 365 account and follow the instructions to log on. The first time you log on to the app under a particular identity, you will be prompted to consent to the permissions that the app is requesting. Choose **Accept**, which gives the application permission to read your profile information. You'll then see the following screen, which shows that the app has successfully authenticated and is able to read your profile information from Microsoft Graph:
 
@@ -90,12 +90,14 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 ## Resources
 
 Documentation:
+
 * [Microsoft Graph Dev Center](https://developer.microsoft.com/en-us/graph/)
 * [Get started with Microsoft Graph and REST](https://developer.microsoft.com/en-us/graph/docs/concepts/rest)
 * [Get access tokens to call Microsoft Graph](https://developer.microsoft.com/en-us/graph/docs/concepts/auth_overview)
 * [Authorize access to web applications using OAuth 2.0 and Azure Active Directory](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-protocols-oauth-code)
 
 Samples:
+
 * [Python authentication samples for Microsoft Graph](https://github.com/microsoftgraph/python-sample-auth)
 * [Sending mail via Microsoft Graph from Python](https://github.com/microsoftgraph/python-sample-send-mail)
 * [Working with paginated Microsoft Graph responses in Python](https://github.com/microsoftgraph/python-sample-pagination)
@@ -103,11 +105,13 @@ Samples:
 * [Python console application for Microsoft Graph](https://github.com/microsoftgraph/python-sample-console-app)
 
 Auth libraries:
+
 * [Microsoft ADAL for Python](https://github.com/AzureAD/azure-activedirectory-library-for-python)
 * [Flask-Oauthlib](https://flask-oauthlib.readthedocs.io/en/latest/)
 * [Requests-Oauthlib](https://media.readthedocs.org/pdf/requests-oauthlib/latest/requests-oauthlib.pdf)
 * [Azure Active Directory v2.0 authentication libraries](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-libraries)
 
 Specifications:
+
 * [Oauth 2.0 specification](http://www.rfc-editor.org/rfc/rfc6749.txt)
 * [Open ID Connect specifications](http://openid.net/connect/)

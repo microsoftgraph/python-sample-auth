@@ -5,7 +5,7 @@ other secure storage mechanism.
 """
 
 CLIENT_ID = 'ENTER_YOUR_CLIENT_ID'
-CLIENT_SECRET = 'ENTER_YOUR_SECRET'
+CLIENT_SECRET = 'ENTER_YOUR_CLIENT_SECRET'
 REDIRECT_URI = 'http://localhost:5000/login/authorized'
 
 # AUTHORITY_URL ending determines type of account that can be authenticated:
