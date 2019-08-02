@@ -1,3 +1,33 @@
+---
+page_type: sample
+products:
+- office-365
+- office-excel
+- office-planner
+- office-teams
+- office-outlook
+- office-onedrive
+- office-sp
+- office-onenote
+- ms-graph
+languages:
+- python
+extensions:
+  contentType: samples
+  technologies:
+  - Microsoft Graph
+  - Azure AD
+  services:
+  - Office 365
+  - Excel
+  - Planner
+  - Microsoft Teams
+  - Outlook
+  - OneDrive
+  - SharePoint
+  - OneNote
+  createdDate: 10/27/2017 9:33:22 PM
+---
 # Python authentication samples for Microsoft Graph
 
 ![language:Python](https://img.shields.io/badge/Language-Python-blue.svg?style=flat-square) ![license:MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)
