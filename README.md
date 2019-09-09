@@ -1,5 +1,5 @@
 ---
-page_type: sample
+page_type: sample 
 products:
 - office-365
 - office-excel
