@@ -1,5 +1,6 @@
 ---
-page_type: sample 
+page_type: sample
+description: "This repo includes examples of four different approaches you can use to authenticate with Azure AD from a Python web application."
 products:
 - office-365
 - office-excel
